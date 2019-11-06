@@ -43,22 +43,89 @@ We will be using **web sockets** in order to allow users to message one another.
 
 API Endpoints
 
-1. /v1/meetups/    (Homepage)
-- GET: Respond with a cardview of public meetups that users want to organize, only viewable if signed in
+/v1/meetups/    (Homepage)
+* GET: Respond with a cardview of public meetups that users want to organize, only viewable if signed in
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
 
-2. /v1/user/signin
-- GET: gets the sign in page
-- POST: post information to user database for authentication
+/v1/meetups/    (Homepage)
+* GET: Respond with a cardview of public meetups that users want to organize, only viewable if signed in
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
 
-3. /v1/user/signup
-- GET: gets the sign up page
-- POST: post information to user database to create user account
+/v1/user/signin
+* GET: gets the sign in page
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
+* POST: post information to user database for authentication
+- 201: Retrieve and return all user information, user struct
+- 401: No sessionID or user not logged in
+- 500: Server error
 
-4. /v1/meetups/{userID}
-- POST: post new meetup event to meetup database associated with user
-- DELETE: delete meetup event, only user who created meetup event can delete meetup event
+/v1/user/signup
+* GET: gets the sign up page
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
+* POST: post information to user database to create user account
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
 
-5. /v1/user/chat/
-- GET: get chat page 
+/v1/meetups/{userID}
+* POST: post new meetup event to meetup database associated with user
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
+* DELETE: delete meetup event, only user who created meetup event can delete meetup event
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
+
+/v1/user/chat/
+* GET: get chat page 
+- 200: Retrieve and return all meetups information
+- 401: No sessionID or user not logged in
+- 500: Server error
 
 **Include any database schemas as an appendix**
+
+### Database Schemas
+
+user: User represents a person who can log-in, message, and be a part of meetups on our site
+```
+{
+    'email': 'user_email',
+    'passwordhash': 'password_hash',
+    'username': 'username',
+    'datesignedup': 'date'
+
+}
+```
+
+credentials: Represents what a user will input to log in to their account
+```
+{
+    'email': 'user_email',
+    'password': 'password'
+
+}
+```
+
+meetup: Represents a proposed or completed meetup between multiple users at a certain location for a certain activity
+```
+{
+    'userlist': [
+        'user1'
+    ],
+    'location': 'address',
+    'creator': 'username',
+    'date': 'date',
+    'starttime': 'starttime',
+    'endtime': 'endtime'
+}
+```
+
