@@ -13,11 +13,12 @@ This is a written, non-technical description of your project. Depending on the s
 Our target audience is people who want to play music in a group. We want to build a platform in which people can find others to form music ensembles to enjoy playing music. It can be hard for people playing an instrument to find people playing similar instruments, or an ensemble/band may be looking for a certain player to join their group (Ex: Jazz band needs a bass player). This platform will allow people to post public meetup events and message other players.
 
 ## Technical Description
-### Include an architectural diagram mapping 1) all server and database components, 2) flow of data, and its communication type (message? REST API?).
+
+**Include an architectural diagram mapping 1) all server and database components, 2) flow of data, and its communication type (message? REST API?).**
 
 Being created on Draw.io
 
-### A summary table of user stories (descriptions of the experience a user would want) in the following format (P0 P1 means priority. These classifications do not factor into grading. They are more for your own benefit to think about what would be top priorities if you happened to run out of time. Mark which ones you think make up the minimal viable product)
+**A summary table of user stories (descriptions of the experience a user would want) in the following format (P0 P1 means priority. These classifications do not factor into grading. They are more for your own benefit to think about what would be top priorities if you happened to run out of time. Mark which ones you think make up the minimal viable product)**
 
 | **Priority** | **User** | **Description** |
 |--------------|----------|-----------------|
@@ -30,9 +31,9 @@ Being created on Draw.io
 | P2 (Low) | As a user | I want to post public performances so that other users can come and watch |
 
 
-### For each of your user story, describe in 2-3 sentences what your technical implementation strategy is. Explicitly note in bold which technology you are using (if applicable):
+**For each of your user story, describe in 2-3 sentences what your technical implementation strategy is. Explicitly note in bold which technology you are using (if applicable):**
 
-### Include a list available endpoints your application will provide and what is the purpose it serves. Ex. GET /driver/{id}
+**Include a list available endpoints your application will provide and what is the purpose it serves. Ex. GET /driver/{id}**
 
 API Endpoints
 
@@ -54,4 +55,4 @@ API Endpoints
 5. /v1/user/chat/
 - GET: get chat page 
 
-### Include any database schemas as an appendix
+**Include any database schemas as an appendix**
