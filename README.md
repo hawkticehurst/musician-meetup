@@ -16,6 +16,10 @@ Our target audience is people who want to play music in a group. We want to buil
 
 **Include an architectural diagram mapping 1) all server and database components, 2) flow of data, and its communication type (message? REST API?).**
 
+### Infrastructure
+
+Users will interact exclusively with our website/domain container, hosted by AWS, and that (Docker) container will interact with our web server handlers. In our backend, user/meetup information will be stored in a MySQL database, and session information will be stored in a Redis database. Between our Web UI and our session information wel will have a Gateway setup, and this will interact with the Web UI using a REST API. 
+
 Being created on Draw.io
 
 **A summary table of user stories (descriptions of the experience a user would want) in the following format (P0 P1 means priority. These classifications do not factor into grading. They are more for your own benefit to think about what would be top priorities if you happened to run out of time. Mark which ones you think make up the minimal viable product)**
@@ -31,7 +35,9 @@ Being created on Draw.io
 | P2 (Low) | As a user | I want to post public performances so that other users can come and watch |
 
 
-**For each of your user story, describe in 2-3 sentences what your technical implementation strategy is. Explicitly note in bold which technology you are using (if applicable):**
+**For each of your user stories, describe in 2-3 sentences what your technical implementation strategy is. Explicitly note in bold which technology you are using (if applicable):**
+
+We will be using **web sockets** in order to allow users to message one another. 
 
 **Include a list available endpoints your application will provide and what is the purpose it serves. Ex. GET /driver/{id}**
 
