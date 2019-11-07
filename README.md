@@ -21,12 +21,9 @@ Users will interact exclusively with our website/domain container, hosted by AWS
 | P0 (High) | As a player | I want to message other music players to plan meetups and play music together |
 | P0 (High) | As a player | I want to create public meetup events that other music players can discover to organize group ensembles |
 | P0 (High) | As a user | I want to be able to create a user account |
-| P1 (Med) | As a user | I want to be able to share music/tabs with another player |
-| P2 (Low) | As a user | I want to have a calendar of my future events to organize all my music events |
+| P1 (Med) | As a user | I want to be able to join meetup events already created |
 | P2 (Low) | As a user | I want to post public performances so that other users can come and watch |
-
-
-**For each of your user stories, describe in 2-3 sentences what your technical implementation strategy is. Explicitly note in bold which technology you are using (if applicable):**
+| P2 (Low) | As a user | I want to have a calendar of my future events to organize all my music events |
 
 We will be using **web sockets** in order to allow users to message one another.
 
