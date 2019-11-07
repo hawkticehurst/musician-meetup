@@ -14,7 +14,7 @@ As developers, we are intrigued by the challenge that live-messaging with web so
 
 Users will interact exclusively with our website/domain container, hosted by AWS, and that (Docker) container will interact with our web server handlers. In our backend, user/meetup information will be stored in a MySQL database, and session information will be stored in a Redis database. Between our Web UI and our session information wel will have a Gateway setup, and this will interact with the Web UI using a REST API. 
 
-Being created on Draw.io
+![Diagram of the Service Architecture](./readme-assets/architecture.jpg)
 
 | **Priority** | **User** | **Description** |
 |--------------|----------|-----------------|
