@@ -4,15 +4,15 @@
 
 Our target audience is people who want to play music in a group. We want to build a platform in which people can find others to form music ensembles and enjoy playing music together. 
 
-It can be hard for people playing an instrument to find people playing similar instruments, or an ensemble/band may be looking for a certain player to join their group (Ex: Jazz band needs a bass player). This platform will allow people to post public meetup events and message other players. This platform will also allow users to learn from other players nearby to them.
+It can be hard for people playing an instrument to find people playing similar instruments, or an ensemble/band may be looking for a certain player to join their group (Ex: Jazz band needs a bass player). This platform will allow people to post public meetup events and message other players. This platform will also allow users to learn from other players nearby.
 
-As developers, we are intrigued by the challenge that live-messaging with web sockets presents. We are also interested to see how connecting users chatting with actual meetup capabilities will go, how seamless we can make the transition.
+As developers, we are intrigued by the challenge that live-messaging with web sockets presents. We are also interested to see if we can create a seamless transition for users from chatting to creating meetups. 
 
 ## Technical Description
 
 ### Infrastructure
 
-Users will interact exclusively with our website/domain container, hosted by AWS, and that (Docker) container will interact with our web server handlers. In our backend, user/meetup information will be stored in a MySQL database, and session information will be stored in a Redis database. Between our Web UI and our session information wel will have a Gateway setup, and this will interact with the Web UI using a REST API. 
+Users will interact exclusively with our web UI Docker container (hosted on AWS). The web UI container will interact with a API Gateway services (via a REST API) that will facilitate communication with all the other services in our backend. User, meetup, and chat information will be stored in a MySQL database, and session information will be stored in a Redis database. 
 
 ### Service Architecture
 
@@ -31,7 +31,7 @@ Users will interact exclusively with our website/domain container, hosted by AWS
 
 **Story #1: I want to be able to create a user account and log in**
 
-We will create a **Dockerized** **Go** web microservice that acts as the server gateway. This web service will expose a REST API (over port 443) that the Web UI can call. This gateway will facilitate user creation and authentication. 
+We will create a **Dockerized** **Go** web microservice that acts as an API gateway. This web service will expose a REST API (over port 443) that the Web UI can call. This gateway will facilitate user creation and authentication.
 
 The service will maintain a connection to our **MySQL** database (over port 3306) in order to save user information. The service will also maintain a connection to our **Redis** database (over port 6379) in order to create, track, and delete user sessions.
 
