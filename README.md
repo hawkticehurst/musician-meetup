@@ -14,6 +14,8 @@ As developers, we are intrigued by the challenge that live-messaging with web so
 
 Users will interact exclusively with our website/domain container, hosted by AWS, and that (Docker) container will interact with our web server handlers. In our backend, user/meetup information will be stored in a MySQL database, and session information will be stored in a Redis database. Between our Web UI and our session information wel will have a Gateway setup, and this will interact with the Web UI using a REST API. 
 
+### Service Architecture
+
 ![Diagram of the Service Architecture](./readme-assets/architecture.jpg)
 
 | **Priority** | **User** | **Description** |
@@ -23,6 +25,8 @@ Users will interact exclusively with our website/domain container, hosted by AWS
 | P0 (High) | As a user | I want to be able to view meetup events that other users have created |
 | P0 (High) | As a user | I want to chat with other music players to plan meetups and discuss music together |
 | P1 (Med) | As a user | I want to be able to join meetup events that are already created |
+
+### User Stories
 
 **Story #1: I want to be able to create a user account and log in**
 
@@ -96,7 +100,7 @@ The service will maintain a connection to our **MySQL** database over port 3306 
 - 401: No sessionID or user not logged in
 - 500: Server error
 
-### Database Schemas
+## Database Schemas
 
 We will use MySQL as our persistent database.
 
