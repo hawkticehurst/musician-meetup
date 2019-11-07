@@ -2,19 +2,13 @@
 
 ## Project Description
 
-This is a written, non-technical description of your project. Depending on the specifics of your project, you should outline the answers to these (and perhaps other) questions:
+Our target audience is people who want to play music in a group. We want to build a platform in which people can find others to form music ensembles and enjoy playing music together. 
 
-- Who is your target audience?  Who do you envision using your application? Depending on the domain of your application, there may be a variety of audiences interested in using your application.  You should hone in on one of these audiences.
-- Why does your audience want to use your application? Please provide some sort of reasoning. 
-- Why do you as developers want to build this application?
+It can be hard for people playing an instrument to find people playing similar instruments, or an ensemble/band may be looking for a certain player to join their group (Ex: Jazz band needs a bass player). This platform will allow people to post public meetup events and message other players. This platform will also allow users to learn from other players nearby to them.
 
-**Write this as a narrative (no bullet points or tables).**
-
-Our target audience is people who want to play music in a group. We want to build a platform in which people can find others to form music ensembles to enjoy playing music. It can be hard for people playing an instrument to find people playing similar instruments, or an ensemble/band may be looking for a certain player to join their group (Ex: Jazz band needs a bass player). This platform will allow people to post public meetup events and message other players.
+As developers, we are intrigued by the challenge that live-messaging with web sockets presents. We are also interested to see how connecting users chatting with actual meetup capabilities will go, how seamless we can make the transition.
 
 ## Technical Description
-
-**Include an architectural diagram mapping 1) all server and database components, 2) flow of data, and its communication type (message? REST API?).**
 
 ### Infrastructure
 
@@ -22,22 +16,27 @@ Users will interact exclusively with our website/domain container, hosted by AWS
 
 Being created on Draw.io
 
-**A summary table of user stories (descriptions of the experience a user would want) in the following format (P0 P1 means priority. These classifications do not factor into grading. They are more for your own benefit to think about what would be top priorities if you happened to run out of time. Mark which ones you think make up the minimal viable product)**
-
 | **Priority** | **User** | **Description** |
 |--------------|----------|-----------------|
-| P0 (High) | As a user | I want to message other music players to plan meetups and play music together |
-| P0 (High) | As a user | I want to create public meetup events that other music players can discover to organize group ensembles |
+| P0 (High) | As a player | I want to message other music players to plan meetups and play music together |
+| P0 (High) | As a player | I want to create public meetup events that other music players can discover to organize group ensembles |
 | P0 (High) | As a user | I want to be able to create a user account |
-| P1 (Med) | As a user | I want to add information on the instruments that I play, experience level, and music genre interests to my profile so that users can find players more easily to play with |
-| P2 (Low) | As a user | I want to be able to share music/tabs with another player |
+| P1 (Med) | As a user | I want to be able to share music/tabs with another player |
 | P2 (Low) | As a user | I want to have a calendar of my future events to organize all my music events |
 | P2 (Low) | As a user | I want to post public performances so that other users can come and watch |
 
 
 **For each of your user stories, describe in 2-3 sentences what your technical implementation strategy is. Explicitly note in bold which technology you are using (if applicable):**
 
-We will be using **web sockets** in order to allow users to message one another. 
+We will be using **web sockets** in order to allow users to message one another.
+
+We will be using a web microservice to handle the creation of meetup events, this microservice will run our gateway handler and our MySQL database, which will store meetup information.
+
+We will be using a redis session store to allow users to login/logout. This will go from our front-end in html/css to our auth handler which is in Go.
+
+We will be 
+
+
 
 **Include a list available endpoints your application will provide and what is the purpose it serves. Ex. GET /driver/{id}**
 
@@ -49,35 +48,9 @@ API Endpoints
 - 401: No sessionID or user not logged in
 - 500: Server error
 
-/v1/meetups/    (Homepage)
-* GET: Respond with a cardview of public meetups that users want to organize, only viewable if signed in
-- 200: Retrieve and return all meetups information
-- 401: No sessionID or user not logged in
-- 500: Server error
-
-/v1/user/signin
-* GET: gets the sign in page
-- 200: Retrieve and return all meetups information
-- 401: No sessionID or user not logged in
-- 500: Server error
-* POST: post information to user database for authentication
-- 201: Retrieve and return all user information, user struct
-- 401: No sessionID or user not logged in
-- 500: Server error
-
-/v1/user/signup
-* GET: gets the sign up page
-- 200: Retrieve and return all meetups information
-- 401: No sessionID or user not logged in
-- 500: Server error
-* POST: post information to user database to create user account
-- 200: Retrieve and return all meetups information
-- 401: No sessionID or user not logged in
-- 500: Server error
-
-/v1/meetups/{userID}
-* POST: post new meetup event to meetup database associated with user
-- 200: Retrieve and return all meetups information
+/v1/meetups/{meetupID}    (Meetup page)
+* GET: Respond with a struct with info on the given meetup
+- 200: Retrieve and return all the meetup's information
 - 401: No sessionID or user not logged in
 - 500: Server error
 * DELETE: delete meetup event, only user who created meetup event can delete meetup event
@@ -85,15 +58,37 @@ API Endpoints
 - 401: No sessionID or user not logged in
 - 500: Server error
 
+/v1/user/signin
+* POST: gets the sign in page
+- 200: Authenticate and log user in
+- 401: Cannot sign in given credentials
+- 500: Server error
+* DELETE: sign user out
+- 200: Successfully sign out user and let the user know with message
+- 401: Session error, potentially no one logged in or distorted session
+- 500: Server error
+
+/v1/user/signup
+* POST: post information to user database to create user account
+- 200: Retrieve new user information
+- 401: Could not create user, or invalid session
+- 500: Server error
+
+/v1/meetups/newmeetup
+* POST: post new meetup event to meetup database associated with user
+- 200: Post info to MySQL database, return meetup id
+- 401: Invalid session
+- 500: Server error
+
 /v1/user/chat/
 * GET: get chat page 
-- 200: Retrieve and return all meetups information
+- 200: Retrieve and return chat page
 - 401: No sessionID or user not logged in
 - 500: Server error
 
-**Include any database schemas as an appendix**
-
 ### Database Schemas
+
+We will use MySQL as our persistent database.
 
 user: User represents a person who can log-in, message, and be a part of meetups on our site
 ```
