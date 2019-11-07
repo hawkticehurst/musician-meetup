@@ -18,6 +18,8 @@ Users will interact exclusively with our website/domain container, hosted by AWS
 
 ![Diagram of the Service Architecture](./readme-assets/architecture.jpg)
 
+### User Stories
+
 | **Priority** | **User** | **Description** |
 |--------------|----------|-----------------|
 | P0 (High) | As a user | I want to be able to create a user account and log in |
@@ -26,33 +28,32 @@ Users will interact exclusively with our website/domain container, hosted by AWS
 | P0 (High) | As a user | I want to chat with other music players to plan meetups and discuss music together |
 | P1 (Med) | As a user | I want to be able to join meetup events that are already created |
 
-### User Stories
 
 **Story #1: I want to be able to create a user account and log in**
 
-We will create a **Dockerized** **Go** web microservice that acts as the server gateway. This web service will expose a REST API over port 443 that the Web UI can call. This gateway will facilitate user creation and authentication. 
+We will create a **Dockerized** **Go** web microservice that acts as the server gateway. This web service will expose a REST API (over port 443) that the Web UI can call. This gateway will facilitate user creation and authentication. 
 
-The service will maintain a connection to our **MySQL** database over port 3306 in order to save user information. The service will also maintain a connection to our **Redis** database over port 6379 in order to create, track, and delete user sessions.
+The service will maintain a connection to our **MySQL** database (over port 3306) in order to save user information. The service will also maintain a connection to our **Redis** database (over port 6379) in order to create, track, and delete user sessions.
 
 **Story #2: I want to create public meetup events that other music players can discover**
 
-We will create a **Dockerized** **Go** web microservice for creating, storing, and deleting meetup events. This web service will expose a REST API over port 80 that the API Gateway can call. 
+We will create a **Dockerized** **Go** web microservice for creating, storing, and deleting meetup events. This web service will expose a REST API (over port 80) that the API Gateway can call. 
 
-The service will maintain a connection to our **MySQL** database over port 3306 in order to store meetup information.
+The service will maintain a connection to our **MySQL** database (over port 3306) in order to store meetup information.
 
 **Story #3: I want to be able to view meetup events that other users have created**
 
-As a continuation of the previous Go web 
+ This is an augmentation to the above **Dockerized** **Go** web microservice that will retrieve all meetup events from our MySQL database (over port 3306) and return them to the client to be displayed via the Web UI.
 
 **Story #4: I want to chat with other music players to plan meetups and discuss music together**
 
-We will create a **Dockerized** **Node.js** web microservice to facilitate messaging between users. This web service will expose a REST API over port 80 that the API Gateway can call. This messaging service will be powered via **Web Sockets** and maintain a connection to our **MySQL** persistent database over port 3306 to maintain messaging history.
+We will create a **Dockerized** **Node.js** web microservice to facilitate messaging between users. This web service will expose a REST API (over port 80) that the API Gateway can call. This messaging service will be powered via **Web Sockets** and maintain a connection to our **MySQL** persistent database (over port 3306) to maintain messaging history.
 
 **Story #5: I want to be able to join meetup events that are already created**
 
 This will be an update to our Meetup web microservice. That will implement a REST API PATCH update to add the user to the meetup.
 
-The service will maintain a connection to our **MySQL** database over port 3306 in order to store and update this information.
+The service will maintain a connection to our **MySQL** database (over port 3306) in order to store and update this information.
 
 ## API Endpoints
 
