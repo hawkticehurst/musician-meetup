@@ -18,26 +18,39 @@ Users will interact exclusively with our website/domain container, hosted by AWS
 
 | **Priority** | **User** | **Description** |
 |--------------|----------|-----------------|
-| P0 (High) | As a player | I want to message other music players to plan meetups and play music together |
-| P0 (High) | As a player | I want to create public meetup events that other music players can discover to organize group ensembles |
-| P0 (High) | As a user | I want to be able to create a user account |
-| P1 (Med) | As a user | I want to be able to join meetup events already created |
-| P2 (Low) | As a user | I want to post public performances so that other users can come and watch |
-| P2 (Low) | As a user | I want to have a calendar of my future events to organize all my music events |
+| P0 (High) | As a user | I want to be able to create a user account and log in |
+| P0 (High) | As a user | I want to create public meetup events that other music players can discover |
+| P0 (High) | As a user | I want to be able to view meetup events that other users have created |
+| P0 (High) | As a user | I want to chat with other music players to plan meetups and discuss music together |
+| P1 (Med) | As a user | I want to be able to join meetup events that are already created |
 
-We will be using **web sockets** in order to allow users to message one another.
+**Story #1: I want to be able to create a user account and log in**
 
-We will be using a web microservice to handle the creation of meetup events, this microservice will run our gateway handler and our MySQL database, which will store meetup information.
+We will create a **Dockerized** **Go** web microservice that acts as the server gateway. This web service will expose a REST API over port 443 that the Web UI can call. This gateway will facilitate user creation and authentication. 
 
-We will be using a redis session store to allow users to login/logout. This will go from our front-end in html/css to our auth handler which is in Go.
+The service will maintain a connection to our **MySQL** database over port 3306 in order to save user information. The service will also maintain a connection to our **Redis** database over port 6379 in order to create, track, and delete user sessions.
 
-We will be 
+**Story #2: I want to create public meetup events that other music players can discover**
 
+We will create a **Dockerized** **Go** web microservice for creating, storing, and deleting meetup events. This web service will expose a REST API over port 80 that the API Gateway can call. 
 
+The service will maintain a connection to our **MySQL** database over port 3306 in order to store meetup information.
 
-**Include a list available endpoints your application will provide and what is the purpose it serves. Ex. GET /driver/{id}**
+**Story #3: I want to be able to view meetup events that other users have created**
 
-API Endpoints
+As a continuation of the previous Go web 
+
+**Story #4: I want to chat with other music players to plan meetups and discuss music together**
+
+We will create a **Dockerized** **Node.js** web microservice to facilitate messaging between users. This web service will expose a REST API over port 80 that the API Gateway can call. This messaging service will be powered via **Web Sockets** and maintain a connection to our **MySQL** persistent database over port 3306 to maintain messaging history.
+
+**Story #5: I want to be able to join meetup events that are already created**
+
+This will be an update to our Meetup web microservice. That will implement a REST API PATCH update to add the user to the meetup.
+
+The service will maintain a connection to our **MySQL** database over port 3306 in order to store and update this information.
+
+## API Endpoints
 
 /v1/meetups/    (Homepage)
 * GET: Respond with a cardview of public meetups that users want to organize, only viewable if signed in
