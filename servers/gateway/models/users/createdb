@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export MYSQL_ROOT_PASSWORD="testpwd"
+docker rm -f mysqltestcontainer
+docker build -t hawkticehurst/mysqltest ../../../db/
+docker run -d -p 3306:3306 --name mysqltestcontainer -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DATABASE=testdb hawkticehurst/mysqltest

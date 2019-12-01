@@ -1,0 +1,19 @@
+{
+  "name": "messaging",
+  "version": "1.0.0",
+  "description": "A messaging microservice built using WebSockets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.5",
+    "express": "^4.17.1",
+    "http": "0.0.0",
+    "multer": "^1.4.2",
+    "promise-mysql": "^4.1.1",
+    "ws": "^7.2.0"
+  }
+}

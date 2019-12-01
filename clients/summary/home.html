@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Meta Summary</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.css">
+  <script src="home.js"></script>
+  <script>
+    let sock;
+    document.addEventListener("DOMContentLoaded", (event) => {
+      sock = new WebSocket("wss://server.info441summary.me/v1/ws");
+      sock.onopen = () => {
+        console.log("Connection Opened");
+      };
+      sock.onclose = () => {
+        console.log("Connection Closed");
+      };
+      sock.onmessage = (msg) => {
+        console.log("Message received " + msg.data);
+        document.getElementById("socket-text").textContent = msg.data;
+      };
+    });
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-4">
+        <h1>Messaging</h1>
+        <div id="channel" class="card hidden"></div>
+      </div>
+      <div class="col-8">
+        <h1>Events</h1>
+
+        <!-- Trigger the modal with a button -->
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Create
+          Event</button>
+
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Create Event</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="Title">Title</label>
+                  <input type="Title" class="form-control" id="Title" placeholder="Enter title" required>
+                </div>
+                <div class="form-group">
+                  <label for="DateTime">Event Date & Time</label>
+                  <input type="DateTime" class="form-control" id="DateTime" placeholder="Enter date & time" required>
+                </div>
+                <div class="form-group">
+                  <label for="Location">Location</label>
+                  <input type="Location" class="form-control" id="Location" placeholder="Enter location" required>
+                </div>
+                <div class="form-group">
+                  <label for="Description">Description</label>
+                  <input type="Description" class="form-control" id="Description" placeholder="Enter description" required>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="submit" type="button" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div id="cards"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
