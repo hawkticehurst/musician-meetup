@@ -1,5 +1,5 @@
 FROM alpine
 RUN apk add --no-cache ca-certificates
 COPY summary /summary
-EXPOSE 443
+EXPOSE 80
 ENTRYPOINT ["/summary"]
