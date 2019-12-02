@@ -4,6 +4,7 @@ const express = require("express");
 const multer = require("multer");
 const channels = require("./handlers/channels");
 const messages = require("./handlers/messages");
+const events = require("./handlers/events");
 const auth = require("./middleware/auth");
 const param = require("./middleware/param");
 const db = require("./middleware/db");
@@ -45,6 +46,9 @@ app.delete("/v1/channels/:channelid/members", param.contains, auth.isCreator, ch
 
 app.patch("/v1/messages/:messageid", param.contains, auth.isCreatorMsg, messages.updateMsg);
 app.delete("/v1/messages/:messageid", param.contains, auth.isCreatorMsg, messages.deleteMsg);
+
+app.get("/v1/events", events.getAllEvents);
+app.post("/v1/events", events.createNewEvent);
 
 app.listen(port, host, function() {
   console.log(`Server is listening at ${addr}...`);

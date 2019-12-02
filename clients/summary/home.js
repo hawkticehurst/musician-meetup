@@ -4,47 +4,105 @@
   // Remember to always run the main.go file on port 4000 (vs the default port 80)
   // const BASE_URL = "http://localhost:4000/v1/summary";
 
-  const BASE_URL = "https://server.info441summary.me/v1/users";
+  const BASE_URL = "https://server.info441summary.me/v1/events";
 
   /**
    *  Functions that will be called once the window is loaded
    *  Submit button will get click event listener and call fetchUrlSummary
    */
   window.addEventListener("load", () => {
+    getEvents();
     const button = id('submit');
-    button.addEventListener('click', function(event){
-      event.preventDefault();
+    button.addEventListener('click', function (event) {
+      //event.preventDefault();
       createEvent();
     });
   });
 
   const createEvent = () => {
-      const newUser = {
-        firstName: idValue('FirstName'),
-        lastName: idValue('LastName'),
-        email: idValue('Email'),
-        userName: idValue('UserName'),
-        password: idValue('Password'),
-        passwordConf: idValue('PasswordConf')
-      }
-      fetch(BASE_URL, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          'Content-Type': 'application/json'
-          // 'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: JSON.stringify(newUser) // body data type must match "Content-Type" header
-      }).then(checkStatus)
-      .catch(displayError)
+    const newEvent = {
+      title: idValue('Title'),
+      datetime: idValue('DateTime'),
+      location: idValue('Location'),
+      description: idValue('Description'),
+    }
+    console.log(newEvent);
+    fetch(BASE_URL, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(newEvent) // body data type must match "Content-Type" header
+    }).then(checkStatus)
+      //.then(getEvents)
+      .catch(displayErrorForm)
+  }
+
+  const getEvents = () => {
+    fetch(BASE_URL)
+      .then(checkStatus)
+      .then(JSON.parse)
+      .then(displayCards)
+      .catch(displayErrorHomePage);
+  }
+
+  const displayCards = (info) => {
+    for(var i = 0; i < info.length; i++) {
+      let data = info[i];
+      let card = document.createElement('div');
+      card.className = 'card';
+
+      let cardBody = document.createElement('div');
+      cardBody.className = 'card-body';
+
+      let title = document.createElement('h5');
+      title.innerText = data.title;
+      title.className = 'card-title';
+
+      let datetime = document.createElement('h6');
+      datetime.innerText = data.datetime;
+      datetime.className = 'card-text';
+
+      let location = document.createElement('h6');
+      location.innerText = data.location;
+      location.className = 'card-text';
+
+      let description = document.createElement('p');
+      description.innerText = data.description;
+      description.className = 'card-text';
+
+      card.appendChild(cardBody);
+      card.appendChild(title);
+      card.appendChild(datetime);
+      card.appendChild(location);
+      card.appendChild(description);
+      id("cards").appendChild(card);
+    }
   }
 
 /**
  * Function to handle the result of an unsuccessful fetch call
  * @param {Object} error - Error resulting from unsuccesful fetch call 
  */
-const displayError = (error) => {
+const displayErrorForm = (error) => {
   // Retrieve container for displaying error
-  const metaContainer = id('meta-container');
+  const metaContainer = id('formError');
+  if (metaContainer.classList.contains("hidden")) {
+    metaContainer.classList.remove("hidden");
+  }
+  metaContainer.innerHTML = "";
+
+  // Render error
+  const errorMsg = document.createElement('h2');
+  errorMsg.classList.add("error-msg");
+  errorMsg.textContent = error;
+  metaContainer.appendChild(errorMsg);
+}
+
+const displayErrorHomePage = (error) => {
+  // Retrieve container for displaying error
+  const metaContainer = id('errorHome');
   if (metaContainer.classList.contains("hidden")) {
     metaContainer.classList.remove("hidden");
   }
@@ -81,12 +139,11 @@ const idValue = (idName) => {
  *                   Promise result
  */
 const checkStatus = (response) => {
-  console.log("checkstatus");
-  if (response.status === 400) {
-    return Promise.reject(new Error("Invalid fields"));
+  if (response.status != 200) {
+    return Promise.reject(new Error("Server error"));
   } else {
-    window.location = "home.html";
+    return response.text();
   }
 }
 
-})();
+}) ();

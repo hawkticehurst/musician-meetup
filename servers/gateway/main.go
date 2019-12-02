@@ -94,13 +94,14 @@ func main() {
 	mux.Handle("/v1/channels", messagingProxy)
 	mux.Handle("/v1/channels/", messagingProxy)
 	mux.Handle("/v1/messages/", messagingProxy)
+	mux.Handle("/v1/events", messagingProxy)
 
 	mux.HandleFunc("/v1/users", hctx.UsersHandler)
 	mux.HandleFunc("/v1/users/", hctx.SpecificUserHandler)
 	mux.HandleFunc("/v1/sessions", hctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/", hctx.SpecificSessionHandler)
 
-	mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
+	//mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
 
 	log.Printf("Server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
@@ -114,11 +115,11 @@ func CustomDirector(targets []*url.URL, sessionKey string, redisstore *sessions.
 	var counter int32
 	counter = 0
 	return func(r *http.Request) {
-		_, err := sessions.GetSessionID(r, sessionKey)
-		if err != nil {
-			log.Printf("Error: Retrieving Session ID: %v", err)
-			r.Header["X-User"] = nil
-		} else {
+		// _, err := sessions.GetSessionID(r, sessionKey)
+		// if err != nil {
+		// 	log.Printf("Error: Retrieving Session ID: %v", err)
+		// 	r.Header["X-User"] = nil
+		// } else {
 			log.Println("No error getting sessionID")
 			sessionState := &handlers.SessionState{}
 			sessions.GetState(r, sessionKey, redisstore, sessionState)
@@ -127,7 +128,7 @@ func CustomDirector(targets []*url.URL, sessionKey string, redisstore *sessions.
 			log.Println("User JSON:")
 			log.Println(string(bytes))
 			r.Header.Add("X-User", string(bytes[:]))
-		}
+		//}
 
 		targ := targets[counter%int32(len(targets))]
 		atomic.AddInt32(&counter, 1) // note, to be extra safe, we’ll need to use mutexes
