@@ -5,6 +5,7 @@
   // const BASE_URL = "http://localhost:4000/v1/summary";
 
   const BASE_URL = "https://server.info441summary.me/v1/events";
+  const LOGOUT_URL = "https://server.info441summary.me/v1/sessions/mine";
 
   /**
    *  Functions that will be called once the window is loaded
@@ -17,6 +18,11 @@
       //event.preventDefault();
       createEvent();
     });
+    const logoutButton = id('log_out')
+    logoutButton.addEventListener('click', function (event) {
+      //event.preventDefault();
+      logUserOut();
+    });
   });
 
   const createEvent = () => {
@@ -28,7 +34,7 @@
     }
     console.log(newEvent);
     fetch(BASE_URL, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Content-Type': 'application/json'
         // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -37,6 +43,19 @@
     }).then(checkStatus)
       //.then(getEvents)
       .catch(displayErrorForm)
+  }
+
+  const logUserOut = () => {
+    fetch(LOGOUT_URL, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'text/html'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: ""// body data type must match "Content-Type" header
+    }).then(checkStatus)
+      //.then(getEvents)
+      then(window.location.pathname = '/').catch(displayErrorForm)
   }
 
   const getEvents = () => {
