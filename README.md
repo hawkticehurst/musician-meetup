@@ -16,7 +16,7 @@ Users will interact exclusively with our web UI Docker container (hosted on AWS)
 
 ### Service Architecture
 
-![Diagram of the Service Architecture](./readme-assets/architecture.jpg)
+![Diagram of the Service Architecture](./assets/architecture.jpg)
 
 ### User Stories
 
