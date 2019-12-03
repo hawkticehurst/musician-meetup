@@ -85,7 +85,7 @@
     if (response.status === 400) {
       return Promise.reject(new Error("Invalid fields"));
     } else {
-      window.location = "home.html";
+      window.location = "../browse";
     }
   }
 

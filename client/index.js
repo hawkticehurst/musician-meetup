@@ -89,7 +89,7 @@
     if (response.status === 401) {
       return Promise.reject(new Error("Invalid fields"));
     } else {
-      window.location = "../myevents";
+      window.location = "../browse";
     }
   }
 
