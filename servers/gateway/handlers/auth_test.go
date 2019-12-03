@@ -1,17 +1,16 @@
 package handlers
 
 import (
-	"assignments-hawkticehurst/servers/gateway/models/users"
-	"assignments-hawkticehurst/servers/gateway/sessions"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"serverside-final-project/servers/gateway/models/users"
+	"serverside-final-project/servers/gateway/sessions"
 	"testing"
 	"time"
 )
-
 
 //Set request content type header to wrong type and look for
 //status code http.StatusUnsupportedMediaType to be returned
@@ -200,14 +199,14 @@ func TestValidUserIDNumberSpecificUserHandler(t *testing.T) {
 	// Check the status code is what we expect.
 	if status := rrTwo.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK )
+			status, http.StatusOK)
 	}
 	// Check that application/json is set as content-type
 	if content := rrTwo.Header().Get("Content-type"); content != "application/json" {
 		t.Errorf("handler returned wrong content type: got %v want %v",
 			content, "application/json")
 	}
-	// Check response body is correct by comparing user input into 
+	// Check response body is correct by comparing user input into
 	// request with response body values
 	newUser := &users.NewUser{Email: "stanley@gmail.com", Password: "123456", PasswordConf: "123456", UserName: "swu", FirstName: "Stanley", LastName: "Wu"}
 	user, _ := newUser.ToUser()
@@ -240,14 +239,14 @@ func TestValidUserIDMeSpecificUserHandler(t *testing.T) {
 	// Check the status code is what we expect.
 	if status := rrTwo.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK )
+			status, http.StatusOK)
 	}
 	// Check that application/json is set as content-type
 	if content := rrTwo.Header().Get("Content-type"); content != "application/json" {
 		t.Errorf("handler returned wrong content type: got %v want %v",
 			content, "application/json")
 	}
-	// Check response body is correct by comparing user input into 
+	// Check response body is correct by comparing user input into
 	// request with response body values
 	newUser := &users.NewUser{Email: "stanley@gmail.com", Password: "123456", PasswordConf: "123456", UserName: "swu", FirstName: "Stanley", LastName: "Wu"}
 	user, _ := newUser.ToUser()
@@ -262,7 +261,7 @@ func TestValidUserIDMeSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//Test if the user ID in the request URL is not "me" or does not 
+//Test if the user ID in the request URL is not "me" or does not
 //match the currently-authenticated user, respond with StatusForbidden (403)
 func TestUnauthenticatedUserIDSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
@@ -331,7 +330,7 @@ func TestUpdateSpecificUserHandler(t *testing.T) {
 	handler := http.HandlerFunc(context.SpecificUserHandler)
 	handler.ServeHTTP(rrTwo, req)
 	// Check that StatusCreated code is returned
-	if status := rrTwo.Code; status != http.StatusOK  {
+	if status := rrTwo.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
@@ -353,7 +352,7 @@ func TestUpdateSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//If HTTP method besides GET and PATCH is used, 
+//If HTTP method besides GET and PATCH is used,
 //a statusmethodnotallowed error should occur
 func TestWrongHTTPMethodSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
@@ -372,7 +371,7 @@ func TestWrongHTTPMethodSpecificUserHandler(t *testing.T) {
 	// Check the status code is what we expect.
 	if status := rrTwo.Code; status != http.StatusMethodNotAllowed {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusMethodNotAllowed )
+			status, http.StatusMethodNotAllowed)
 	}
 }
 

@@ -1,9 +1,6 @@
 package main
 
 import (
-	"assignments-hawkticehurst/servers/gateway/handlers"
-	"assignments-hawkticehurst/servers/gateway/models/users"
-	"assignments-hawkticehurst/servers/gateway/sessions"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -12,6 +9,9 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"serverside-final-project/servers/gateway/handlers"
+	"serverside-final-project/servers/gateway/models/users"
+	"serverside-final-project/servers/gateway/sessions"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -19,6 +19,34 @@ import (
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 )
+
+// var upgrader = websocket.Upgrader{
+// 	ReadBufferSize:  1024,
+// 	WriteBufferSize: 1024,
+// 	CheckOrigin: func(r *http.Request) bool {
+// 		// This function's purpose is to reject websocket upgrade requests if the
+// 		// origin of the websockete handshake request is coming from unknown domains.
+// 		// This prevents some random domain from opening up a socket with your server.
+// 		// TODO: make sure you modify this for your HW to check if r.Origin is your host
+// 		return true
+// 	},
+// }
+
+// // WebSocketConnectionHandler upgrades a client connection to a WebSocket connection,
+// // regardless of what method is used in the request
+// func WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request) {
+// 	// handle the websocket handshake
+// 	if r.Header.Get("Origin") != "https://client.info441summary.me" {
+// 		http.Error(w, "Websocket Connection Refused", 403)
+// 	} else {
+// 		conn, err := upgrader.Upgrade(w, r, nil)
+// 		if err != nil {
+// 			http.Error(w, "Failed to open websocket connection", 401)
+// 		}
+// 		// do something with connection
+// 		conn.WriteMessage(1, []byte("Hello jackass\n"))
+// 	}
+// }
 
 //main is the main entry point for the server
 func main() {
@@ -34,7 +62,6 @@ func main() {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-
 	sessionKey := os.Getenv("SESSIONKEY")
 	reddisAddr := os.Getenv("REDISADDR")
 	dsn := os.Getenv("DSN")
@@ -118,16 +145,16 @@ func CustomDirector(targets []*url.URL, sessionKey string, redisstore *sessions.
 	return func(r *http.Request) {
 		_, err := sessions.GetSessionID(r, sessionKey)
 		if err != nil {
-			log.Printf("Error: Retrieving Session ID: %v", err)
+			//log.Printf("Error: Retrieving Session ID: %v", err)
 			r.Header["X-User"] = nil
 		} else {
-			log.Println("No error getting sessionID")
+			//log.Println("No error getting sessionID")
 			sessionState := &handlers.SessionState{}
 			sessions.GetState(r, sessionKey, redisstore, sessionState)
 			user := sessionState.User
 			bytes, _ := json.Marshal(user)
-			log.Println("User JSON:")
-			log.Println(string(bytes))
+			//log.Println("User JSON:")
+			//log.Println(string(bytes))
 			r.Header.Add("X-User", string(bytes[:]))
 		}
 
