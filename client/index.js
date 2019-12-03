@@ -1,46 +1,46 @@
 (function () {
-    "use strict";
-  
-    // Remember to always run the main.go file on port 4000 (vs the default port 80)
-    // const BASE_URL = "http://localhost:4000/v1/summary";
-  
-    const BASE_URL = "https://server.info441summary.me/v1/sessions";
-  
-    /**
-     *  Functions that will be called once the window is loaded
-     *  Submit button will get click event listener and call fetchUrlSummary
-     */
-    window.addEventListener("load", () => {
-        const button = id('signup');
-        button.addEventListener('click', function(event){
-          event.preventDefault();
-          window.location = "signup.html";
-        });
-    });
+  "use strict";
 
-    window.addEventListener("load", () => {
-      const button = id('submit');
-      button.addEventListener('click', function(event){
-        event.preventDefault();
-        authenticate();
-      });
-    });
+  // Remember to always run the main.go file on port 4000 (vs the default port 80)
+  // const BASE_URL = "http://localhost:4000/v1/summary";
 
-    const authenticate = () => {
-        const user = {
-          email: idValue('Email'),
-          password: idValue('Password'),
-        }
-        fetch(BASE_URL, {
-          method: 'POST', // *GET, POST, PUT, DELETE, etc.
-          headers: {
-            'Content-Type': 'application/json'
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: JSON.stringify(user) // body data type must match "Content-Type" header
-        }).then(checkStatus)
-        .catch(displayError)
+  const BASE_URL = "https://api.info441summary.me/v1/sessions";
+
+  /**
+   *  Functions that will be called once the window is loaded
+   *  Submit button will get click event listener and call fetchUrlSummary
+   */
+  window.addEventListener("load", () => {
+    const button = id('signup');
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      window.location = "signup.html";
+    });
+  });
+
+  window.addEventListener("load", () => {
+    const button = id('submit');
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      authenticate();
+    });
+  });
+
+  const authenticate = () => {
+    const user = {
+      email: idValue('Email'),
+      password: idValue('Password'),
     }
+    fetch(BASE_URL, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(user) // body data type must match "Content-Type" header
+    }).then(checkStatus)
+      .catch(displayError)
+  }
 
   /**
    * Function to handle the result of an unsuccessful fetch call
@@ -62,7 +62,7 @@
   }
 
 
-/* ------------------------------ Helper Functions  ------------------------------ */
+  /* ------------------------------ Helper Functions  ------------------------------ */
 
   /**
    * Returns the element that has the ID attribute with the specified value.
@@ -89,7 +89,7 @@
     if (response.status === 401) {
       return Promise.reject(new Error("Invalid fields"));
     } else {
-      window.location = "home.html";
+      window.location = "../myevents";
     }
   }
 
