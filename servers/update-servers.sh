@@ -1,4 +1,4 @@
-export DOCKERNAME=piercecave
+export DOCKERNAME=hawkticehurst
 
 docker pull $DOCKERNAME/summary
 docker pull $DOCKERNAME/gatewayserver
