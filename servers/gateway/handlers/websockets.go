@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"assignments-hawkticehurst/servers/gateway/sessions"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"serverside-final-project/servers/gateway/sessions"
 
 	"github.com/gorilla/websocket"
 	"github.com/streadway/amqp"
@@ -60,15 +60,55 @@ var upgrader = websocket.Upgrader{
 // Data structure containing every current websocket connection
 var socketStore *SocketStore = NewSocketStore()
 
+	// CloseMessage denotes a close control message. The optional message
+	// payload contains a numeric code and text. Use the FormatCloseMessage
+	// function to format a close message payload.
+	CloseMessage = 8
+
+	// PingMessage denotes a ping control message. The optional message payload
+	// is UTF-8 encoded text.
+	PingMessage = 9
+
+	// PongMessage denotes a pong control message. The optional message payload
+	// is UTF-8 encoded text.
+	PongMessage = 10
+)
+
+// Message represents a RabbitMQ message
+type Message struct {
+	Type          string
+	Channel       string `json:"channel"`
+	ChannelID     string `json:"channelID"`
+	UserMessage   string `json:"message"`
+	UserMessageID string `json:"messageID"`
+	UserIDs       []int64
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		// This function's purpose is to reject websocket upgrade requests if the
+		// origin of the websockete handshake request is coming from unknown domains.
+		// This prevents some random domain from opening up a socket with your server.
+		// TODO: make sure you modify this for your HW to check if r.Origin is your host
+
+		return true
+	},
+}
+
+// Data structure containing every current websocket connection
+var socketStore *SocketStore = NewSocketStore()
+
 // MyWebSocketConnectionHandler upgrades a client connection to a WebSocket connection,
 // regardless of what method is used in the request
-func (hc *Context) MyWebSocketConnectionHandler(w http.ResponseWriter, r *http.Request) {
+func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Break 1, before getsessionid")
+
 	// Check if user is authenticated (i.e. logged in)
-	// ff minot change ff
 	_, err := sessions.GetSessionID(r, hc.SessionIDKey)
 	if err != nil {
-		//http.Error(w, err.Error(), http.StatusUnauthorized)
+		http.Error(w, err.Error(), http.StatusUnauthorized)
 		log.Println("Websockets could not get session id")
 		return
 	}
@@ -78,15 +118,16 @@ func (hc *Context) MyWebSocketConnectionHandler(w http.ResponseWriter, r *http.R
 	// Get user information
 	sessionState := &SessionState{}
 	sessions.GetState(r, hc.SessionIDKey, hc.SessionStore, sessionState)
-
 	user := sessionState.User
+
 	log.Println("Break 3, before get origin")
 	log.Printf("Origin Header in websocket.go: %s", r.Header.Get("Origin"))
+
 	// Upgrade the connection to a web socket connection
 	if r.Header.Get("Origin") != "https://client.info441summary.me" {
-		http.Error(w, "Websocket Connection Refused", 403)
-		// w.WriteHeader(http.StatusForbidden)
-		// w.Write([]byte("Websocket Connection Refused"))
+		// http.Error(w, "Websocket Connection Refused", 403)
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Websocket Connection Refused"))
 		log.Println("Websocket Connection Refused")
 		return
 	}
@@ -94,8 +135,8 @@ func (hc *Context) MyWebSocketConnectionHandler(w http.ResponseWriter, r *http.R
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		//http.Error(w, "Failed to open websocket connection", 401)
-		// w.WriteHeader(http.StatusUnauthorized)
-		// w.Write([]byte("Failed to open websocket connection"))
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Failed to open websocket connection"))
 		log.Println("Failed to open websocket connectio")
 		return
 	}
@@ -213,34 +254,3 @@ func failOnError(err error, msg string) {
 		log.Fatalf("%s: %s", msg, err)
 	}
 }
-
-// package handlers
-
-// var upgrader = websocket.Upgrader{
-// 	ReadBufferSize:  1024,
-// 	WriteBufferSize: 1024,
-// 	CheckOrigin: func(r *http.Request) bool {
-// 		// This function's purpose is to reject websocket upgrade requests if the
-// 		// origin of the websockete handshake request is coming from unknown domains.
-// 		// This prevents some random domain from opening up a socket with your server.
-// 		// TODO: make sure you modify this for your HW to check if r.Origin is your host
-// 		return true
-// 	},
-// }
-
-// // WebSocketConnectionHandler upgrades a client connection to a WebSocket connection,
-// // regardless of what method is used in the request
-// func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request) {
-// 	// handle the websocket handshake
-// 	if r.Header.Get("Origin") != "https://client.info441summary.me" {
-// 		http.Error(w, "Websocket Connection Refused", 403)
-// 		return
-// 	}
-// 	conn, err := upgrader.Upgrade(w, r, nil)
-// 	if err != nil {
-// 		http.Error(w, "Failed to open websocket connection", 401)
-// 	}
-// 	// do something with connection
-// 	conn.WriteMessage(1, []byte("Hello jackass\n"))
-// 	w.Write([]byte("Made connection"))
-// }

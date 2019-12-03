@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"assignments-hawkticehurst/servers/gateway/models/users"
-	"assignments-hawkticehurst/servers/gateway/sessions"
 	"net/http"
+	"serverside-final-project/servers/gateway/models/users"
+	"serverside-final-project/servers/gateway/sessions"
 )
 
 // Context struct to contain the information about the context
