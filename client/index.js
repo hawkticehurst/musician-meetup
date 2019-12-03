@@ -1,6 +1,4 @@
-(require([
-  "../helpers"
-],function () {
+(function () {
   "use strict";
 
   // Remember to always run the main.go file on port 4000 (vs the default port 80)
