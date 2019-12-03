@@ -7,7 +7,7 @@ export DOCKERNAME=$name
 cd ./gateway/
 GOOS=linux go build
 echo "✅  Linux Go Build Complete"
-docker build -t $DOCKERNAME/gatewayserver .
+docker build --no-cache -t $DOCKERNAME/gatewayserver .
 echo "✅  Local Gateway Docker Build Complete"
 go clean
 echo "✅  Linux Go Clean Complete"
@@ -30,6 +30,7 @@ docker push $DOCKERNAME/summary
 docker push $DOCKERNAME/gatewayserver
 docker push $DOCKERNAME/messagingserver
 docker push $DOCKERNAME/mysqldb
+docker push $DOCKERNAME/gatewayserver
 echo "✅  Push Docker Containers to DockerHub"
 
 ssh -oStrictHostKeyChecking=no ec2-user@api.info441summary.me 'bash -s' < update-servers.sh
