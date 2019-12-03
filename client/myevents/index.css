@@ -47,6 +47,23 @@ hr {
   overflow: auto;
 }
 
+#chat-input-container {
+  display: flex;
+  margin-bottom: 0;
+}
+
+#chat-input {
+  margin-right: 1em;
+}
+
+#send-btn {
+  padding: 0 2em 0 2em;
+}
+
+.error-msg {
+  color: indianred;
+}
+
 /* 
 h1 {
   text-align: center;
@@ -112,8 +129,4 @@ a {
   margin: 1em;
   margin-top: 2em;
 }
-
-.error-msg {
-  margin-right: 1em;
-  margin-left: 1em;
-} */
+ */
