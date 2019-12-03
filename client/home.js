@@ -47,7 +47,7 @@
 
   const logUserOut = () => {
     fetch(LOGOUT_URL, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Content-Type': 'text/html'
         // 'Content-Type': 'application/x-www-form-urlencoded',
