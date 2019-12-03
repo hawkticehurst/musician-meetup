@@ -34,12 +34,13 @@
     fetch(BASE_URL, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': document.cookie[5:]
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: JSON.stringify(user) // body data type must match "Content-Type" header
     }).then(checkStatus)
-      .catch(displayError)
+      .then(saveAuthToken).catch(displayError)
   }
 
   /**
