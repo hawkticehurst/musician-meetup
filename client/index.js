@@ -49,7 +49,7 @@
   }
 
   const redirect = () => {
-    window.location = "../browse/index.html";
+    window.location = "./browse/index.html";
   }
 
   /**
