@@ -4,15 +4,9 @@ body {
   padding: 2em;
 }
 
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 4em;
-}
-
 #login-form {
   margin: auto auto;
+  margin-top: 5em;
   width: 40%;
   box-shadow: 0 6px 10px #DDDDDD;
   border-radius: 5px;
