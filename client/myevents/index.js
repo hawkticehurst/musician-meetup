@@ -24,8 +24,8 @@
     fetch(LOGOUT_URL, {
       method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
       headers: {
-        'Content-Type': 'text/html'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'text/html',
+        'Authorization': getAuthToken()
       },
       body: ""// body data type must match "Content-Type" header
     }).then(checkStatus)
@@ -34,7 +34,12 @@
   }
 
   const getEvents = () => {
-    fetch(BASE_URL)
+    fetch(BASE_URL, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Authorization': getAuthToken()
+      }
+    })
       .then(checkStatus)
       .then(JSON.parse)
       .then(displayCards)
@@ -107,6 +112,21 @@
     errorMsg.classList.add("error-msg");
     errorMsg.textContent = "Sorry we are unable to retrieve events at this time.";
     metaContainer.appendChild(errorMsg);
+  }
+
+  const getAuthToken = () => {
+    let nameEQ = "auth=";
+    let cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i];
+      while (cookie.charAt(0) == " ") {
+        cookie = cookie.substring(1, cookie.length);
+      }
+      if (cookie.indexOf(nameEQ) == 0) {
+        return cookie.substring(nameEQ.length, cookie.length);
+      }
+    }
+    return null;
   }
 
 
