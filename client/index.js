@@ -11,7 +11,6 @@
    *  Submit button will get click event listener and call fetchUrlSummary
    */
   window.addEventListener("load", () => {
-    console.log(document.cookie);
     const button = id('create-account');
     button.addEventListener('click', function (event) {
       event.preventDefault();
@@ -50,7 +49,7 @@
   }
 
   const redirect = () => {
-    window.location = "../browse";
+    window.location = "../browse/index.html";
   }
 
   /**
