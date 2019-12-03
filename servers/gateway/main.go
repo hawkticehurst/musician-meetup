@@ -117,16 +117,16 @@ func CustomDirector(targets []*url.URL, sessionKey string, redisstore *sessions.
 	return func(r *http.Request) {
 		_, err := sessions.GetSessionID(r, sessionKey)
 		if err != nil {
-			log.Printf("Error: Retrieving Session ID: %v", err)
+			//log.Printf("Error: Retrieving Session ID: %v", err)
 			r.Header["X-User"] = nil
 		} else {
-			log.Println("No error getting sessionID")
+			//log.Println("No error getting sessionID")
 			sessionState := &handlers.SessionState{}
 			sessions.GetState(r, sessionKey, redisstore, sessionState)
 			user := sessionState.User
 			bytes, _ := json.Marshal(user)
-			log.Println("User JSON:")
-			log.Println(string(bytes))
+			//log.Println("User JSON:")
+			//log.Println(string(bytes))
 			r.Header.Add("X-User", string(bytes[:]))
 		}
 
