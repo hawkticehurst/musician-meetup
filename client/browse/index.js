@@ -20,7 +20,7 @@
       createEvent();
     });
 
-    const logoutButton = id('log_out')
+    const logoutButton = id('log-out')
     logoutButton.addEventListener('click', function (event) {
       //event.preventDefault();
       logUserOut();
@@ -51,13 +51,14 @@
     fetch(LOGOUT_URL, {
       method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
       headers: {
-        'Content-Type': 'text/html'
+        'Content-Type': 'text/html',
+        'Authorization': getAuthToken()
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: ""// body data type must match "Content-Type" header
     }).then(checkStatus)
     //.then(getEvents)
-    then(window.location.pathname = '/').catch(displayErrorForm)
+    .then(window.location.pathname = 'client/index.html').catch(displayErrorForm)
   }
 
   const getEvents = () => {
