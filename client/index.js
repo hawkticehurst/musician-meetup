@@ -1,4 +1,6 @@
-(function () {
+(require([
+  "../helpers"
+],function () {
   "use strict";
 
   // Remember to always run the main.go file on port 4000 (vs the default port 80)
@@ -11,7 +13,6 @@
    *  Submit button will get click event listener and call fetchUrlSummary
    */
   window.addEventListener("load", () => {
-    console.log(document.cookie);
     const button = id('create-account');
     button.addEventListener('click', function (event) {
       event.preventDefault();
@@ -36,7 +37,7 @@
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': document.cookie
+        'Authorization': getAuthToken()
       },
       body: JSON.stringify(user) // body data type must match "Content-Type" header
     }).then(checkStatus)
@@ -101,6 +102,21 @@
     } else {
       return Promise.reject(new Error(response.status + ": " + response.statusText));
     }
+  }
+
+  const getAuthToken = () => {
+    let nameEQ = "auth=";
+    let cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i];
+      while (cookie.charAt(0) == " ") {
+        cookie = cookie.substring(1, cookie.length);
+      }
+      if (cookie.indexOf(nameEQ) == 0) {
+        return cookie.substring(nameEQ.length, cookie.length);
+      }
+    }
+    return null;
   }
 
 })();

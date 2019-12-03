@@ -126,7 +126,6 @@
         cookie = cookie.substring(1, cookie.length);
       }
       if (cookie.indexOf(nameEQ) == 0) {
-        console.log(cookie.substring(nameEQ.length, cookie.length));
         return cookie.substring(nameEQ.length, cookie.length);
       }
     }
