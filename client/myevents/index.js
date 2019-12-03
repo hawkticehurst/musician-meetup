@@ -54,8 +54,8 @@
       },
       body: ""// body data type must match "Content-Type" header
     }).then(checkStatus)
-      //.then(getEvents)
-      then(window.location.pathname = '/').catch(displayErrorForm)
+    //.then(getEvents)
+    then(window.location.pathname = '/').catch(displayErrorForm)
   }
 
   const getEvents = () => {
@@ -67,23 +67,20 @@
   }
 
   const displayCards = (info) => {
-    for(var i = 0; i < info.length; i++) {
+    for (var i = 0; i < info.length; i++) {
       let data = info[i];
       let card = document.createElement('div');
       card.className = 'card';
 
-      let cardBody = document.createElement('div');
-      cardBody.className = 'card-body';
-
-      let title = document.createElement('h5');
+      let title = document.createElement('h4');
       title.innerText = data.title;
       title.className = 'card-title';
 
-      let datetime = document.createElement('h6');
+      let datetime = document.createElement('p');
       datetime.innerText = data.datetime;
       datetime.className = 'card-text';
 
-      let location = document.createElement('h6');
+      let location = document.createElement('p');
       location.innerText = data.location;
       location.className = 'card-text';
 
@@ -91,7 +88,6 @@
       description.innerText = data.description;
       description.className = 'card-text';
 
-      card.appendChild(cardBody);
       card.appendChild(title);
       card.appendChild(datetime);
       card.appendChild(location);
@@ -100,69 +96,69 @@
     }
   }
 
-/**
- * Function to handle the result of an unsuccessful fetch call
- * @param {Object} error - Error resulting from unsuccesful fetch call 
- */
-const displayErrorForm = (error) => {
-  // Retrieve container for displaying error
-  const metaContainer = id('formError');
-  if (metaContainer.classList.contains("hidden")) {
-    metaContainer.classList.remove("hidden");
+  /**
+   * Function to handle the result of an unsuccessful fetch call
+   * @param {Object} error - Error resulting from unsuccesful fetch call 
+   */
+  const displayErrorForm = (error) => {
+    // Retrieve container for displaying error
+    const metaContainer = id('formError');
+    if (metaContainer.classList.contains("hidden")) {
+      metaContainer.classList.remove("hidden");
+    }
+    metaContainer.innerHTML = "";
+
+    // Render error
+    const errorMsg = document.createElement('h2');
+    errorMsg.classList.add("error-msg");
+    errorMsg.textContent = error;
+    metaContainer.appendChild(errorMsg);
   }
-  metaContainer.innerHTML = "";
 
-  // Render error
-  const errorMsg = document.createElement('h2');
-  errorMsg.classList.add("error-msg");
-  errorMsg.textContent = error;
-  metaContainer.appendChild(errorMsg);
-}
+  const displayErrorHomePage = (error) => {
+    // Retrieve container for displaying error
+    const metaContainer = id('errorHome');
+    if (metaContainer.classList.contains("hidden")) {
+      metaContainer.classList.remove("hidden");
+    }
+    metaContainer.innerHTML = "";
 
-const displayErrorHomePage = (error) => {
-  // Retrieve container for displaying error
-  const metaContainer = id('errorHome');
-  if (metaContainer.classList.contains("hidden")) {
-    metaContainer.classList.remove("hidden");
+    // Render error
+    const errorMsg = document.createElement('h2');
+    errorMsg.classList.add("error-msg");
+    errorMsg.textContent = error;
+    metaContainer.appendChild(errorMsg);
   }
-  metaContainer.innerHTML = "";
-
-  // Render error
-  const errorMsg = document.createElement('h2');
-  errorMsg.classList.add("error-msg");
-  errorMsg.textContent = error;
-  metaContainer.appendChild(errorMsg);
-}
 
 
-/* ------------------------------ Helper Functions  ------------------------------ */
+  /* ------------------------------ Helper Functions  ------------------------------ */
 
-/**
- * Returns the element that has the ID attribute with the specified value.
- * @param {String} idName HTML element ID.
- * @returns {Object} DOM object associated with ID.
- */
-const id = (idName) => {
-  return document.getElementById(idName);
-}
-
-const idValue = (idName) => {
-  return document.getElementById(idName).value;
-}
-
-/**
- * Helper function to return the response's result text if successful, otherwise
- * returns the rejected Promise result with an error status and corresponding text
- * @param {Object} response Response to check for success/error
- * @returns {Object} Valid result text if response was successful, otherwise rejected
- *                   Promise result
- */
-const checkStatus = (response) => {
-  if (response.status != 200) {
-    return Promise.reject(new Error("Server error"));
-  } else {
-    return response.text();
+  /**
+   * Returns the element that has the ID attribute with the specified value.
+   * @param {String} idName HTML element ID.
+   * @returns {Object} DOM object associated with ID.
+   */
+  const id = (idName) => {
+    return document.getElementById(idName);
   }
-}
 
-}) ();
+  const idValue = (idName) => {
+    return document.getElementById(idName).value;
+  }
+
+  /**
+   * Helper function to return the response's result text if successful, otherwise
+   * returns the rejected Promise result with an error status and corresponding text
+   * @param {Object} response Response to check for success/error
+   * @returns {Object} Valid result text if response was successful, otherwise rejected
+   *                   Promise result
+   */
+  const checkStatus = (response) => {
+    if (response.status != 200) {
+      return Promise.reject(new Error("Server error"));
+    } else {
+      return response.text();
+    }
+  }
+
+})();
