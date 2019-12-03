@@ -11,7 +11,8 @@
    *  Submit button will get click event listener and call fetchUrlSummary
    */
   window.addEventListener("load", () => {
-    const button = id('signup');
+    console.log(document.cookie);
+    const button = id('create-account');
     button.addEventListener('click', function (event) {
       event.preventDefault();
       window.location = "signup.html";
@@ -34,12 +35,22 @@
     fetch(BASE_URL, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
+        'Authorization': document.cookie
       },
       body: JSON.stringify(user) // body data type must match "Content-Type" header
     }).then(checkStatus)
+      .then(handleLogIn)
+      .then(redirect)
       .catch(displayError)
+  }
+
+  const handleLogIn = (response) => {
+    document.cookie = "auth=" + response.headers.get("authorization");
+  }
+
+  const redirect = () => {
+    window.location = "../browse";
   }
 
   /**
@@ -85,11 +96,10 @@
    *                   Promise result
    */
   const checkStatus = (response) => {
-    console.log("checkstatus");
-    if (response.status === 401) {
-      return Promise.reject(new Error("Invalid fields"));
+    if (response.status >= 200 && response.status < 300) {
+      return response;
     } else {
-      window.location = "../browse";
+      return Promise.reject(new Error(response.status + ": " + response.statusText));
     }
   }
 
