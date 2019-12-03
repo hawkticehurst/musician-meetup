@@ -13,37 +13,12 @@
    */
   window.addEventListener("load", () => {
     getEvents();
-    const button = id('submit');
-    button.addEventListener('click', function (event) {
-      //event.preventDefault();
-      createEvent();
-    });
-    const logoutButton = id('log_out')
+    const logoutButton = id('logout-btn')
     logoutButton.addEventListener('click', function (event) {
       //event.preventDefault();
       logUserOut();
     });
   });
-
-  const createEvent = () => {
-    const newEvent = {
-      title: idValue('Title'),
-      datetime: idValue('DateTime'),
-      location: idValue('Location'),
-      description: idValue('Description'),
-    }
-    console.log(newEvent);
-    fetch(BASE_URL, {
-      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: JSON.stringify(newEvent) // body data type must match "Content-Type" header
-    }).then(checkStatus)
-      //.then(getEvents)
-      .catch(displayErrorForm)
-  }
 
   const logUserOut = () => {
     fetch(LOGOUT_URL, {
@@ -92,7 +67,7 @@
       card.appendChild(datetime);
       card.appendChild(location);
       card.appendChild(description);
-      id("cards").appendChild(card);
+      id("cards-container").appendChild(card);
     }
   }
 
@@ -102,9 +77,11 @@
    */
   const displayErrorForm = (error) => {
     // Retrieve container for displaying error
-    const metaContainer = id('formError');
+    const metaContainer = id("formError");
+    const cardsContainer = id("cards-container");
     if (metaContainer.classList.contains("hidden")) {
       metaContainer.classList.remove("hidden");
+      cardsContainer.classList.add("hidden");
     }
     metaContainer.innerHTML = "";
 
@@ -117,16 +94,18 @@
 
   const displayErrorHomePage = (error) => {
     // Retrieve container for displaying error
-    const metaContainer = id('errorHome');
+    const metaContainer = id('error-card');
+    const cardsContainer = id("cards-container");
     if (metaContainer.classList.contains("hidden")) {
       metaContainer.classList.remove("hidden");
+      cardsContainer.classList.add("hidden");
     }
     metaContainer.innerHTML = "";
 
     // Render error
-    const errorMsg = document.createElement('h2');
+    const errorMsg = document.createElement('h3');
     errorMsg.classList.add("error-msg");
-    errorMsg.textContent = error;
+    errorMsg.textContent = "Sorry we are unable to retrieve events at this time.";
     metaContainer.appendChild(errorMsg);
   }
 

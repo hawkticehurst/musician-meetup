@@ -31,20 +31,24 @@
   <header>
     <h3><a href="../browse/index.html">Browse</a></h3>
     <h3><a href="index.html">My Events</a></h3>
-    <h3>Log Out</h3>
+    <h3><a id="logout-btn" href="index.html">Log Out</a></h3>
   </header>
   <main>
     <div class="row">
       <div class="col-4">
         <h1>My Events</h1>
         <hr>
-        <div class="card hidden" id="errorHome"></div>
-        <div id="cards" class="scrollable-content"></div>
+        <div id="error-card" class="hidden"></div>
+        <div id="cards-container" class="scrollable-content"></div>
       </div>
       <div class="col-8">
-        <h1>Messaging</h1>
+        <h1>Event Chat</h1>
         <hr>
-        <div id="channel" class="card hidden scrollable-content"></div>
+        <div id="channel" class="scrollable-content"></div>
+        <div id="chat-input-container" class="form-group">
+          <input id="chat-input" class="form-control" type="Chat-Input" placeholder="Enter Message" required>
+          <button id="send-btn" class="btn btn-primary" type="button">Send</button>
+        </div>
       </div>
     </div>
   </main>
