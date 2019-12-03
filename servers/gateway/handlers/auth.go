@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"assignments-hawkticehurst/servers/gateway/models/users"
-	"assignments-hawkticehurst/servers/gateway/sessions"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"serverside-final-project/servers/gateway/models/users"
+	"serverside-final-project/servers/gateway/sessions"
 	"strconv"
 	"strings"
 	"time"

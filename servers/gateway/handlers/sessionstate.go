@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"assignments-hawkticehurst/servers/gateway/models/users"
+	"serverside-final-project/servers/gateway/models/users"
 	"time"
 )
 
