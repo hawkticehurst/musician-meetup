@@ -1,5 +1,7 @@
 #!/bin/bash
-source build.sh
+
+docker build -t piercecave/web_client .
+echo "✅  Local Docker Build Complete"
 docker login
 docker push piercecave/web_client
 echo "✅  Local Docker Push Complete"
