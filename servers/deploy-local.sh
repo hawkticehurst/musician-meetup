@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# ----------------------------------------------------------------
+# NOTE: THIS SCRIPT DOES NOT WORK YET
+
+# BELOW IS A COPY OF DEPLOYING THE MESSAGING SERVER LOCALLY
+# AND SHOULD BE USED AS A REFERENCE FOR CREATING A DEPLOY SCRIPT
+# THAT BUILDS ALL CONTAINERS LOCALLY
+# ----------------------------------------------------------------
+
 echo "Please enter your DockerHub username: "
 read name
 export DOCKERNAME=$name

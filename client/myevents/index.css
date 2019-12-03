@@ -3,13 +3,48 @@ body {
   font-weight: 700;
 }
 
-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+body {
+  padding: 2em;
 }
 
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.card {
+  box-shadow: 0 6px 10px #DDDDDD;
+  border-radius: 5px;
+  padding: 0.5em;
+  margin: 1em;
+  margin-top: 2em;
+}
+
+.card-title {
+  margin: 0;
+}
+
+.card-text {
+  margin: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+hr {
+  height: 3px;
+}
+
+.scrollable-content {
+  height: 528px;
+  overflow: auto;
+}
+
+/* 
 h1 {
   text-align: center;
   font-size: 50pt;
@@ -40,10 +75,6 @@ button {
   color: white;
   background-color: #0070f3;
   box-shadow: 0 4px 14px 0 rgba(0,118,255,0.39);
-}
-
-.hidden {
-  display: none;
 }
 
 #meta-container {
@@ -82,4 +113,4 @@ a {
 .error-msg {
   margin-right: 1em;
   margin-left: 1em;
-}
+} */

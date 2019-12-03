@@ -2,13 +2,13 @@
 <html lang="en">
 
 <head>
-  <title>Meta Summary</title>
+  <title>My Events</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.css">
-
-  <script src="home.js"></script>
+  <link rel="stylesheet" href="index.css">
+  <script src="index.js"></script>
   <!-- <script>
     let sock;
     document.addEventListener("DOMContentLoaded", (event) => {
@@ -28,27 +28,26 @@
 </head>
 
 <body>
-  <header class="row">
-    <h1>App Name</h1>
-    <h2>My Chats</h2>
-    <h2>Browse</h2>
-    <button id="log_out" type="button" class="btn btn-primary">Log Out</button>
+  <header>
+    <h3><a href="index.html">Browse</a></h3>
+    <h3><a href="myevents/index.html">My Events</a></h3>
+    <h3>Log Out</h3>
   </header>
-  <div class="container">
+  <main>
     <div class="row">
       <div class="col-4">
         <h1>My Events</h1>
+        <hr>
         <div class="card hidden" id="errorHome"></div>
-        <div id="cards"></div>
+        <div id="cards" class="scrollable-content"></div>
       </div>
       <div class="col-8">
         <h1>Messaging</h1>
-        <div id="channel" class="card hidden"></div>
+        <hr>
+        <div id="channel" class="card hidden scrollable-content"></div>
       </div>
     </div>
-  </div>
-
-
+  </main>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
