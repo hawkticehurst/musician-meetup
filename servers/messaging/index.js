@@ -49,6 +49,7 @@ app.delete("/v1/messages/:messageid", param.contains, auth.isCreatorMsg, message
 
 app.get("/v1/events", events.getAllEvents);
 app.post("/v1/events", events.createNewEvent);
+app.post("/v1/events/join", events.joinEvent);
 
 app.listen(port, host, function() {
   console.log(`Server is listening at ${addr}...`);

@@ -8,33 +8,32 @@
  */
 
 async function getAllEvents(req, res) {
-  const db = req.db;
-  const allEvents= [];
-  try {
-    const qry = "SELECT * FROM Events";
-    const events = await db.query(qry);
-    for (let i = 0; i < events.length; i++) {
-        const event = events[i];
-        const eventInfo = {
-            "id": event.ID,
-            "title": event.Title,
-            "datetime": event.EventDateTime,
-            "channel": event.ChannelID,
-            "location": event.LocationOfEvent,
-            "description": event.DescriptionOfEvent
-          }
-          allEvents.push(eventInfo);
+    const db = req.db;
+    const allEvents = [];
+    try {
+        const qry = "SELECT * FROM Events;";
+        const events = await db.query(qry);
+        for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+            const eventInfo = {
+                "id": event.ID,
+                "title": event.Title,
+                "datetime": event.EventDateTime,
+                "channel": event.ChannelID,
+                "location": event.LocationOfEvent,
+                "description": event.DescriptionOfEvent
+            }
+            allEvents.push(eventInfo);
+        }
+    } catch (err) {
+        console.log(err.message);
+        res.set("Content-Type", "text/plain");
+        res.status(500).send("Server Error: Cannot select events in database.");
+        db.end();
+        return;
     }
-  } catch (err) {
-    console.log(err.message);
-    res.set("Content-Type", "text/plain");
-    res.status(500).send("Server Error: Cannot select events in database.");
     db.end();
-    return;
-  }
-  db.end();
-
-  res.status(200).json(allEvents)
+    res.status(200).json(allEvents)
 }
 
 /**
@@ -46,31 +45,47 @@ async function getAllEvents(req, res) {
  */
 
 async function createNewEvent(req, res) {
-  const user = JSON.parse(req.get("X-User"));
-  const event = req.body;
-  const db = req.db;
-  const createdAt = getDateTime();
-  console.log("I am in");
-  console.log(event.title);
-  try {
-    // Insert channel members into database if applicable
-    const qryOne = "INSERT INTO Channels (ChannelName, ChannelDescription, PrivateChannel, TimeCreated, Creator, LastUpdated) VALUES (?,?,?,?,?,?);";
-    // Insert creator of channel into member table
-    const result = await db.query(qryOne, [event.title, event.description, false, createdAt, 1, createdAt])
-    const channelID = result.insertId;
-    const qryTwo = "INSERT INTO Events (Title, EventDateTime, ChannelID, LocationOfEvent, DescriptionOfEvent) VALUES (?,?,?,?,?);";
-    await db.query(qryTwo, [event.title, event.datetime, channelID, event.location, event.description]);
-  } catch (err) {
-    console.log(err.message);
-    res.set("Content-Type", "text/plain");
-    res.status(500).send("Server Error: Cannot create new event or channel.");
+    const user = JSON.parse(req.get("X-User"));
+    const event = req.body;
+    const db = req.db;
+    const createdAt = getDateTime();
+    try {
+        // Insert channel members into database if applicable
+        const qryOne = "INSERT INTO Channels (ChannelName, ChannelDescription, PrivateChannel, TimeCreated, Creator, LastUpdated) VALUES (?,?,?,?,?,?);";
+        // Insert creator of channel into member table
+        const result = await db.query(qryOne, [event.title, event.description, false, createdAt, user.id, createdAt])
+        const channelID = result.insertId;
+        const qryTwo = "INSERT INTO Events (Title, EventDateTime, ChannelID, LocationOfEvent, DescriptionOfEvent) VALUES (?,?,?,?,?);";
+        await db.query(qryTwo, [event.title, event.datetime, channelID, event.location, event.description]);
+    } catch (err) {
+        console.log(err.message);
+        res.set("Content-Type", "text/plain");
+        res.status(500).send("Server Error: Cannot create new event or channel.");
+        db.end();
+        return;
+    }
     db.end();
-    return;
-  }
-  db.end();
 
-  res.status(200)
+    res.status(201);
 }
+
+async function joinEvent(req, res) {
+    const user = JSON.parse(req.get("X-User"));
+    const db = req.db;
+    try {
+        const qryOne = "INSERT INTO UsersJoinEvents (UserID, EventID) VALUES (?,?);";
+        await db.query(qryOne, [user.id, req.body.id]);
+    } catch (err) {
+        console.log(err.message);
+        res.set("Content-Type", "text/plain");
+        res.status(500).send("Server Error: Cannot insert into UsersJoinEvents.");
+        db.end();
+        return;
+    }
+    db.end();
+    res.status(200);
+}
+
 
 function getDateTime() {
     const today = new Date();
@@ -85,5 +100,6 @@ function getDateTime() {
  */
 module.exports = {
     getAllEvents,
-    createNewEvent
+    createNewEvent,
+    joinEvent
 }

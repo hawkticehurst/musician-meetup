@@ -95,13 +95,14 @@ func main() {
 	mux.Handle("/v1/channels/", messagingProxy)
 	mux.Handle("/v1/messages/", messagingProxy)
 	mux.Handle("/v1/events", messagingProxy)
+	mux.Handle("/v1/events/", messagingProxy)
 
 	mux.HandleFunc("/v1/users", hctx.UsersHandler)
 	mux.HandleFunc("/v1/users/", hctx.SpecificUserHandler)
 	mux.HandleFunc("/v1/sessions", hctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/", hctx.SpecificSessionHandler)
 
-	//mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
+	mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
 
 	log.Printf("Server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))

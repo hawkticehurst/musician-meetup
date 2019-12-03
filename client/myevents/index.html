@@ -9,10 +9,10 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.css">
   <link rel="stylesheet" href="index.css">
   <script src="index.js"></script>
-  <!-- <script>
+  <script>
     let sock;
     document.addEventListener("DOMContentLoaded", (event) => {
-      sock = new WebSocket("wss://server.info441summary.me/v1/ws");
+      sock = new WebSocket("wss://api.info441summary.me/v1/ws?auth=" + getAuthToken());
       sock.onopen = () => {
         console.log("Connection Opened");
       };
@@ -23,8 +23,23 @@
         console.log("Message received " + msg.data);
         document.getElementById("socket-text").textContent = msg.data;
       };
+
+      function getAuthToken() {
+        let nameEQ = "auth=";
+        let cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          let cookie = cookies[i];
+          while (cookie.charAt(0) == " ") {
+            cookie = cookie.substring(1, cookie.length);
+          }
+          if (cookie.indexOf(nameEQ) == 0) {
+            return cookie.substring(nameEQ.length, cookie.length);
+          }
+        }
+        return null;
+      }
     });
-  </script> -->
+  </script>
 </head>
 
 <body>

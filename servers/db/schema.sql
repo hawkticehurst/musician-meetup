@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS UserSignInLog (
 
 CREATE TABLE IF NOT EXISTS Channels (
     ID INT NOT NULL AUTO_INCREMENT,
-    ChannelName VARCHAR(255) NOT NULL UNIQUE,
+    ChannelName VARCHAR(255) NOT NULL,
     ChannelDescription VARCHAR(255),
     PrivateChannel BOOLEAN NOT NULL,
     TimeCreated DATETIME NOT NULL,
@@ -56,6 +56,15 @@ CREATE TABLE IF NOT EXISTS Messages (
     Creator INT NOT NULL,
     LastUpdated DATETIME,
     PRIMARY KEY (ID)
+);
+
+CREATE TABLE IF NOT EXISTS UsersJoinEvents (
+    UJM INT NOT NULL AUTO_INCREMENT,
+    UserID INT NOT NULL,
+    EventID INT NOT NULL,
+    PRIMARY KEY (UJM),
+    FOREIGN KEY (UserID) REFERENCES Users(ID),
+    FOREIGN KEY (EventID) REFERENCES Events(ID)
 );
 
 -- Always include a public 'General' channel

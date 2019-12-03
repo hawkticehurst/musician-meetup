@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	
+
 	"github.com/gorilla/websocket"
 	"github.com/streadway/amqp"
 )
