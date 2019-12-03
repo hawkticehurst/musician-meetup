@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"assignments-hawkticehurst/servers/gateway/sessions"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -63,66 +62,68 @@ var socketStore *SocketStore = NewSocketStore()
 // WebSocketConnectionHandler upgrades a client connection to a WebSocket connection,
 // regardless of what method is used in the request
 func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Break 1, before getsessionid")
-	// Check if user is authenticated (i.e. logged in)
-	_, err := sessions.GetSessionID(r, hc.SessionIDKey)
-	if err != nil {
-		//http.Error(w, err.Error(), http.StatusUnauthorized)
-		log.Println("Websockets could not get session id")
-		return
-	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Hello!"))
+	// log.Println("Break 1, before getsessionid")
+	// // Check if user is authenticated (i.e. logged in)
+	// _, err := sessions.GetSessionID(r, hc.SessionIDKey)
+	// if err != nil {
+	// 	//http.Error(w, err.Error(), http.StatusUnauthorized)
+	// 	log.Println("Websockets could not get session id")
+	// 	return
+	// }
 
-	log.Println("Break 2, before getstate")
+	// log.Println("Break 2, before getstate")
 
-	// Get user information
-	sessionState := &SessionState{}
-	sessions.GetState(r, hc.SessionIDKey, hc.SessionStore, sessionState)
+	// // Get user information
+	// sessionState := &SessionState{}
+	// sessions.GetState(r, hc.SessionIDKey, hc.SessionStore, sessionState)
 
-	user := sessionState.User
-	log.Println("Break 3, before get origin")
-	log.Printf("Origin Header in websocket.go: %s", r.Header.Get("Origin"))
-	// Upgrade the connection to a web socket connection
-	if r.Header.Get("Origin") != "https://client.info441summary.me" {
-		http.Error(w, "Websocket Connection Refused", 403)
-		// w.WriteHeader(http.StatusForbidden)
-		// w.Write([]byte("Websocket Connection Refused"))
-		log.Println("Websocket Connection Refused")
-		return
-	}
+	// user := sessionState.User
+	// log.Println("Break 3, before get origin")
+	// log.Printf("Origin Header in websocket.go: %s", r.Header.Get("Origin"))
+	// // Upgrade the connection to a web socket connection
+	// if r.Header.Get("Origin") != "https://client.info441summary.me" {
+	// 	http.Error(w, "Websocket Connection Refused", 403)
+	// 	// w.WriteHeader(http.StatusForbidden)
+	// 	// w.Write([]byte("Websocket Connection Refused"))
+	// 	log.Println("Websocket Connection Refused")
+	// 	return
+	// }
 
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		//http.Error(w, "Failed to open websocket connection", 401)
-		// w.WriteHeader(http.StatusUnauthorized)
-		// w.Write([]byte("Failed to open websocket connection"))
-		log.Println("Failed to open websocket connectio")
-		return
-	}
+	// conn, err := upgrader.Upgrade(w, r, nil)
+	// if err != nil {
+	// 	//http.Error(w, "Failed to open websocket connection", 401)
+	// 	// w.WriteHeader(http.StatusUnauthorized)
+	// 	// w.Write([]byte("Failed to open websocket connection"))
+	// 	log.Println("Failed to open websocket connectio")
+	// 	return
+	// }
 
-	socketStore.Set(user.ID, conn)
+	// socketStore.Set(user.ID, conn)
 
-	// Invoke a goroutine for handling control messages from this connection
-	go (func(userID int64, conn *websocket.Conn) {
-		defer conn.Close()
-		defer socketStore.Delete(userID)
+	// // Invoke a goroutine for handling control messages from this connection
+	// go (func(userID int64, conn *websocket.Conn) {
+	// 	defer conn.Close()
+	// 	defer socketStore.Delete(userID)
 
-		for {
-			messageType, data, err := conn.ReadMessage()
-			if messageType == TextMessage || messageType == BinaryMessage {
-				log.Printf("Client says %v\n", data)
-				log.Printf("Writing %s to all sockets\n", string(data))
-				if err := conn.WriteMessage(TextMessage, data); err != nil {
-					log.Println("Error writing message to WebSocket connection.", err)
-				}
-			} else if messageType == CloseMessage {
-				log.Println("Close message received.")
-				break
-			} else if err != nil {
-				log.Println("Error reading message.")
-				break
-			}
-		}
-	})(user.ID, conn)
+	// 	for {
+	// 		messageType, data, err := conn.ReadMessage()
+	// 		if messageType == TextMessage || messageType == BinaryMessage {
+	// 			log.Printf("Client says %v\n", data)
+	// 			log.Printf("Writing %s to all sockets\n", string(data))
+	// 			if err := conn.WriteMessage(TextMessage, data); err != nil {
+	// 				log.Println("Error writing message to WebSocket connection.", err)
+	// 			}
+	// 		} else if messageType == CloseMessage {
+	// 			log.Println("Close message received.")
+	// 			break
+	// 		} else if err != nil {
+	// 			log.Println("Error reading message.")
+	// 			break
+	// 		}
+	// 	}
+	// })(user.ID, conn)
 }
 
 // ReadIncomingMessagesFromRabbit connects to a RabbitMQ server and starts a go

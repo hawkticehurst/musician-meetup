@@ -101,7 +101,7 @@ func main() {
 	mux.HandleFunc("/v1/sessions", hctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/", hctx.SpecificSessionHandler)
 
-	mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
+	// mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
 
 	log.Printf("Server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
