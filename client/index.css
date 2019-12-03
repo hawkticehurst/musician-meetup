@@ -1,0 +1,29 @@
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
+  padding: 2em;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4em;
+}
+
+#login-form {
+  margin: auto auto;
+  width: 40%;
+  box-shadow: 0 6px 10px #DDDDDD;
+  border-radius: 5px;
+  padding: 1.5em; 
+}
+
+#create-account {
+  display: block;
+  margin-top: 1em;
+}
+
+.hidden {
+  display: none;
+}
