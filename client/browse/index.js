@@ -95,12 +95,26 @@
       description.innerText = data.description;
       description.className = 'card-text';
 
+      let joinBtn = document.createElement("button");
+      joinBtn.innerText = "Join Event";
+      joinBtn.setAttribute("type", "button");
+      joinBtn.classList.add("btn");
+      joinBtn.classList.add("btn-primary");
+      joinBtn.classList.add("join-btn");
+      joinBtn.addEventListener("click", joinEvent);
+
       card.appendChild(title);
       card.appendChild(datetime);
       card.appendChild(location);
       card.appendChild(description);
+      card.appendChild(joinBtn);
       id("events-container").appendChild(card);
     }
+  }
+
+  // HERE STANLEY :)
+  const joinEvent = () => {
+    alert("You joined this event!"); // Remove this later
   }
 
   const getAuthToken = () => {
