@@ -10,13 +10,6 @@
    *  Functions that will be called once the window is loaded
    *  Submit button will get click event listener and call fetchUrlSummary
    */
-  window.addEventListener("load", () => {
-    const button = id('create-account');
-    button.addEventListener('click', function (event) {
-      event.preventDefault();
-      window.location = "signup.html";
-    });
-  });
 
   window.addEventListener("load", () => {
     const button = id('submit');
