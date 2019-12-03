@@ -4,7 +4,7 @@
     // Remember to always run the main.go file on port 4000 (vs the default port 80)
     // const BASE_URL = "http://localhost:4000/v1/summary";
   
-    const BASE_URL = "https://server.info441summary.me/v1/users";
+    const BASE_URL = "https://api.info441summary.me/v1/users";
   
     /**
      *  Functions that will be called once the window is loaded
@@ -85,7 +85,7 @@
     if (response.status === 400) {
       return Promise.reject(new Error("Invalid fields"));
     } else {
-      window.location = "home.html";
+      window.location = "../browse";
     }
   }
 

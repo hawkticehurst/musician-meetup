@@ -1,4 +1,4 @@
-export DOCKERNAME=stan9920
+export DOCKERNAME=piercecave
 
 docker pull $DOCKERNAME/summary
 docker pull $DOCKERNAME/gatewayserver
@@ -30,8 +30,8 @@ export REDISADDR="redisserver:6379"
 export SUMMARYADDR="summaryserver"
 export MESSAGESADDR="messagingserver"
 export DSN="root:testpwd@tcp(mysqlserver:3306)/infodb"
-export TLSCERT=/etc/letsencrypt/live/server.info441summary.me/fullchain.pem
-export TLSKEY=/etc/letsencrypt/live/server.info441summary.me/privkey.pem
+export TLSCERT=/etc/letsencrypt/live/api.info441summary.me/fullchain.pem
+export TLSKEY=/etc/letsencrypt/live/api.info441summary.me/privkey.pem
 echo "✅  Environment Variables Set"
 
 docker network create -d bridge backendnetwork

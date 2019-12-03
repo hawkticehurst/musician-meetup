@@ -1,0 +1,54 @@
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
+}
+
+body {
+  padding: 2em;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4em;
+}
+
+#title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  font-size: 12pt;
+}
+
+#events-container {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.card {
+  box-shadow: 0 6px 10px #DDDDDD;
+  border-radius: 5px;
+  padding: 0.5em;
+  margin: 1em;
+  margin-top: 2em;
+  width: 305px;
+}
+
+.card:hover {
+  cursor: pointer;
+}
+
+.card-title {
+  margin: 0;
+}
+
+.card-text {
+  margin: 0;
+}
+
+.hidden {
+  display: none;
+}
