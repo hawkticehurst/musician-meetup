@@ -86,6 +86,38 @@ async function joinEvent(req, res) {
     res.status(200);
 }
 
+async function getJoinedEvents(req, res) {
+    const user = JSON.parse(req.get("X-User"));
+    const db = req.db;
+    userEvents = [];
+    try {
+        const qryOne = "SELECT EventID FROM UsersJoinEvents WHERE UserID = ?;";
+        const qryTwo = "SELECT * FROM Events WHERE ID = ?;";
+        const events = await db.query(qryOne, [user.id]);
+        for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+            const eventInfo = await db.query(qryTwo, [event]);
+            const eventStruct = {
+                "id": eventInfo.ID,
+                "title": eventInfo.Title,
+                "time": eventInfo.EventDateTime,
+                "channel": eventInfo.ChannelID,
+                "location": eventInfo.LocationOfEvent,
+                "description": eventInfo.DescriptionOfEvent
+            }
+            userEvents.push(eventStruct);
+        }
+    } catch (err) {
+        console.log(err.message);
+        res.set("Content-Type", "text/plain");
+        res.status(500).send("Server Error: Cannot select joined events.");
+        db.end();
+        return;
+    }
+    db.end();
+    res.status(200).json(userEvents);
+}
+
 
 function getDateTime() {
     const today = new Date();
@@ -101,5 +133,6 @@ function getDateTime() {
 module.exports = {
     getAllEvents,
     createNewEvent,
-    joinEvent
+    joinEvent,
+    getJoinedEvents
 }

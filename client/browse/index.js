@@ -98,7 +98,6 @@
             description.className = 'card-text';
 
             let joinBtn = document.createElement("button");
-            //joinBtn.id = data.id;
             joinBtn.innerText = "Join Event";
             joinBtn.setAttribute("type", "button");
             joinBtn.classList.add("btn");
