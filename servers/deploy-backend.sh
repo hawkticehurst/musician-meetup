@@ -7,7 +7,7 @@ export DOCKERNAME=$name
 cd ./gateway/
 GOOS=linux go build
 echo "✅  Linux Go Build Complete"
-docker build --no-cache -t $DOCKERNAME/gatewayserver .
+docker build -t $DOCKERNAME/gatewayserver .
 echo "✅  Local Gateway Docker Build Complete"
 go clean
 echo "✅  Linux Go Clean Complete"
