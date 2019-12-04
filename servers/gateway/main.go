@@ -115,7 +115,7 @@ func main() {
 	summaryProxy := &httputil.ReverseProxy{Director: summaryDirector}
 	messagingProxy := &httputil.ReverseProxy{Director: messageDirector}
 
-	//handlers.ReadIncomingMessagesFromRabbit()
+	handlers.ReadIncomingMessagesFromRabbit()
 
 	mux.Handle("/v1/summary", summaryProxy)
 	mux.Handle("/v1/channels", messagingProxy)
