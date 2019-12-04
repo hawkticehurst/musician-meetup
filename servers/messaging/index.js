@@ -9,6 +9,7 @@ const auth = require("./middleware/auth");
 const param = require("./middleware/param");
 const db = require("./middleware/db");
 const rabbitmq = require("./middleware/rabbitmq");
+const amqp = require('amqplib/callback_api');
 
 const app = express();
 const addr = process.env.ADDR || ":80";
@@ -35,7 +36,7 @@ amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function(error0, connect
   if (error0) {
       throw error0;
   }
-  amqpChannel = connection.createChannel(function(error1, channel) {
+  connection.createChannel(function(error1, channel) {
       if (error1) {
           throw error1;
       }
@@ -70,7 +71,7 @@ app.post("/v1/events", events.createNewEvent);
 app.post("/v1/events/join", events.joinEvent);
 app.get("/v1/events/join", events.getJoinedEvents);
 
-app.listen(port, host, function() {
+app.listen(port, host, function () {
   console.log(`Server is listening at ${addr}...`);
 });
 

@@ -1,6 +1,7 @@
 "use strict";
 
 const rabbitmqhelpers = require("./rabbitmqhelpers");
+const amqp = require('amqplib/callback_api');
 
 /**
  * getAllChannels responds with the list of all channels (jut the channel models, 
@@ -277,13 +278,13 @@ async function sendMessage(req, res) {
     "userIDs": memberIDs.members
   }
 
-  req.amqpChannel.sendToQueue("events", JSON.stringify(sendMessageObject), { persistent: true });
+  //req.amqpChannel.sendToQueue("events", JSON.stringify(sendMessageObject), { persistent: true });
 
   amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function(error0, connection) {
     if (error0) {
         throw error0;
     }
-    amqpChannel = connection.createChannel(function(error1, channel) {
+    connection.createChannel(function(error1, channel) {
       if (error1) {
           throw error1;
       }

@@ -33,5 +33,5 @@ docker push $DOCKERNAME/mysqldb
 docker push $DOCKERNAME/gatewayserver
 echo "✅  Push Docker Containers to DockerHub"
 
-ssh -oStrictHostKeyChecking=no ec2-user@api.info441summary.me 'bash -s' < update-servers.sh
+ssh -oStrictHostKeyChecking=no ec2-user@api.info441summary.me 'bash -s' < update-servers.sh $DOCKERNAME
 echo "🎊  Server Deployment Complete!"
