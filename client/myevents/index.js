@@ -4,7 +4,7 @@
   // Remember to always run the main.go file on port 4000 (vs the default port 80)
   // const BASE_URL = "http://localhost:4000/v1/summary";
 
-  const BASE_URL = "https://api.info441summary.me/v1/events";
+  const JOINEDCHANNELS_URL = "https://api.info441summary.me/v1/events/join";
   const LOGOUT_URL = "https://api.info441summary.me/v1/sessions/mine";
   const CHANNEL_URL = "https://api.info441summary.me/v1/channels/";
   let CURR_CHANNEL = undefined; // This is the currently opened channel id
@@ -38,7 +38,7 @@
   }
 
   const getEvents = () => {
-    fetch(BASE_URL, {
+    fetch(JOINEDCHANNELS_URL, {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Authorization': getAuthToken()
