@@ -152,21 +152,23 @@ func ReadIncomingMessagesFromRabbit() {
 	)
 	failOnError(err, "Failed to declare a queue")
 	log.Println("[AMQP] Queue Declared")
+	log.Println(q.Name)
 
 	msgs, err := ch.Consume(
-		q.Name, // queue
-		"",     // consumer
-		false,  // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		"events", // queue
+		"",       // consumer
+		false,    // auto-ack
+		false,    // exclusive
+		false,    // no-local
+		false,    // no-wait
+		nil,      // args
 	)
 	failOnError(err, "Failed to register a consumer")
 	log.Println("[AMQP] Consume Started")
 
 	go func() {
 		for d := range msgs {
+			log.Println("HELLO")
 			log.Printf("Received a message: %s", d.Body)
 			// log.Println("Delivery:")
 			// log.Println(d)
