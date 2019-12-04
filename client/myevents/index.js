@@ -7,6 +7,8 @@
   const BASE_URL = "https://api.info441summary.me/v1/events";
   const LOGOUT_URL = "https://api.info441summary.me/v1/sessions/mine";
   const CHANNEL_URL = "https://api.info441summary.me/v1/channels/";
+  let CURR_CHANNEL = undefined; // This is the currently opened channel id
+
   /**
    *  Functions that will be called once the window is loaded
    *  Submit button will get click event listener and call fetchUrlSummary
@@ -18,6 +20,9 @@
       //event.preventDefault();
       logUserOut();
     });
+
+    const sendBtn = id("send-btn");
+    sendBtn.addEventListener("click", sendMessage);
   });
 
   const logUserOut = () => {
@@ -54,6 +59,7 @@
       card.addEventListener("click", function () {
         clearChannel();
         getChannel(data.channel);
+        CURR_CHANNEL = data.channel;
       });
 
       let title = document.createElement('h4');
@@ -97,6 +103,32 @@
       .then(response => response.json())
       .then(displayMessages)
       .catch(displayErrorHomePage);
+  }
+
+  const sendMessage = () => {
+    const message = id("chat-input").value;
+    if (message.length > 0) {
+      id("chat-input").value = "";
+
+      const messageJSON = {
+        "body": message
+      }
+
+      const url = CHANNEL_URL + CURR_CHANNEL;
+      fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': getAuthToken()
+        },
+        body: JSON.stringify(messageJSON)
+      })
+        .then(checkStatus)
+        .then(function () {
+          getChannel(CURR_CHANNEL);
+        })
+        .catch(displayErrorHomePage);
+    }
   }
 
   const displayMessages = (data) => {
