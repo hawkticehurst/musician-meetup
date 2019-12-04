@@ -23,6 +23,49 @@
 
     const sendBtn = id("send-btn");
     sendBtn.addEventListener("click", sendMessage);
+
+    
+  });
+
+  let sock;
+  document.addEventListener("DOMContentLoaded", (event) => {
+    sock = new WebSocket("wss://api.info441summary.me/v1/ws?auth=" + getAuthToken());
+    sock.onopen = () => {
+      console.log("Connection Opened");
+    };
+    sock.onclose = () => {
+      console.log("Connection Closed");
+    };
+    sock.onmessage = (msg) => {
+      console.log("Message received " + msg.data);
+
+      // let info2 = JSON.parse(msg.data);
+      // console.log("Parsed Info: " + JSON.stringify(info2))
+
+      let info = JSON.parse(msg.data).message;
+      console.log("Parsed Info: " + JSON.stringify(info))
+
+      if (info.channelID == CURR_CHANNEL) {
+
+        let messageBox = document.createElement('div');
+        messageBox.className = 'container';
+
+        let name = document.createElement('p');
+        name.innerText = info.creator.firstName + " " + info.creator.lastName;
+
+        let message = document.createElement('p');
+        message.innerText = info.body;
+
+        messageBox.appendChild(name);
+        messageBox.appendChild(message);
+        document.getElementById("channel").appendChild(messageBox);
+
+      }
+      
+      //const newMsg = document.createElement("p");
+      //newMsg.textContent = msg.data;
+      //document.getElementById("channel").append(newMsg);
+    };
   });
 
   const logUserOut = () => {
