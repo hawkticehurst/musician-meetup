@@ -30,7 +30,7 @@ app.use(multer().none());
 // along in the request object
 app.use(db.getDB);
 
-app.use(rabbitmq.getRabbitMQConnection);
+// app.use(rabbitmq.getRabbitMQConnection);
 
 // ----- API Routes -----
 app.get("/v1/channels", channels.getAllChannels);
@@ -52,6 +52,6 @@ app.post("/v1/events", events.createNewEvent);
 app.post("/v1/events/join", events.joinEvent);
 app.get("/v1/events/join", events.getJoinedEvents);
 
-app.listen(port, host, function() {
+app.listen(port, host, function () {
   console.log(`Server is listening at ${addr}...`);
 });

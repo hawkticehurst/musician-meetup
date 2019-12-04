@@ -1,4 +1,6 @@
-export DOCKERNAME=stan9920
+#!/bin/bash
+
+export DOCKERNAME=$1
 
 docker pull $DOCKERNAME/summary
 docker pull $DOCKERNAME/gatewayserver
