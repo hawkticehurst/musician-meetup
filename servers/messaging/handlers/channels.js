@@ -268,38 +268,20 @@ async function sendMessage(req, res) {
     "editedAt": newMessage[0].LastUpdated
   }
 
-  res.set("Content-Type", "application/json");
-
   const memberIDs = await rabbitmqhelpers.getMemberIDs(channelID, db);
 
-  const sendMessageObject = {
+  const rabbitNewMessage = {
     "type": "message-new",
     "message": newMsg,
     "userIDs": memberIDs.members
   }
 
+  const error = sendMessageToRabbitMQ(rabbitNewMessage);
+  if (error != null) {
+    console.log("Error sending message to RabbitMQ: " + error);
+    res.status(500).send("Error sending event message to RabbitMQ");
+  }
   //req.amqpChannel.sendToQueue("events", JSON.stringify(sendMessageObject), { persistent: true });
-
-  amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function(error0, connection) {
-    if (error0) {
-        throw error0;
-    }
-    connection.createChannel(function(error1, channel) {
-      if (error1) {
-          throw error1;
-      }
-      var queue = 'events';
-
-      channel.sendToQueue(queue, JSON.stringify(sendMessageObject), { persistent: true });
-
-      console.log("[AMQP] connected");
-      console.log("[AMQP] channel: " + channel);
-    });
-    console.log("[AMQP] connection: " + connection);
-  });
-
-  console.log(" [x] Sent %s", JSON.stringify(sendMessageObject));
-  console.log("Is this working");
 
   res.status(201).json(newMsg);
 }
@@ -516,8 +498,8 @@ async function getUserProfile(userID, db) {
   }
 }
 
-//getMemberProfiles returns user profiles of all
-//members of given channel
+// getMemberProfiles returns user profiles of all
+// members of given channel
 async function getMemberProfiles(channelID, db) {
   const membersArray = [];
   try {
@@ -539,6 +521,7 @@ async function getMemberProfiles(channelID, db) {
   }
 }
 
+// getDateTime 
 function getDateTime() {
   const today = new Date();
   const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -546,6 +529,32 @@ function getDateTime() {
   const dateTime = date + ' ' + time;
   return dateTime;
 }
+
+// sendMessageToRabbitMQ connects to RabbitMQ and sends a given message to the 'events' queue 
+function sendMessageToRabbitMQ(message) {
+  // Connect to RabbitMQ
+  amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function (error0, connection) {
+    if (error0) {
+      return error0;
+    }
+
+    // Create a channel so we can send to the 'events' queue
+    connection.createChannel(function (error1, channel) {
+      if (error1) {
+        return error1;
+      }
+
+      const queue = 'events';
+
+      // Send the given message
+      channel.sendToQueue(queue, JSON.stringify(message), { persistent: true });
+      console.log("Sent to RabbitMQ: %s", JSON.stringify(sendMessageObject));
+    });
+  });
+
+  return null;
+}
+
 /**
  * Expose public handler functions.
  */
