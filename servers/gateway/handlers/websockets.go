@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"serverside-final-project/servers/gateway/sessions"
@@ -134,7 +136,7 @@ func ReadIncomingMessagesFromRabbit() {
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
 	}
-	defer conn.Close()
+	//defer conn.Close()
 	log.Println("[AMQP] Connection Opened")
 
 	// Open a RabbitMQ channel
@@ -142,7 +144,7 @@ func ReadIncomingMessagesFromRabbit() {
 	if err != nil {
 		log.Fatalf("Failed to open channel: %v", err)
 	}
-	defer ch.Close()
+	//defer ch.Close()
 	log.Println("[AMQP] Channel Opened")
 
 	// Connect to RabbitMQ Queue
@@ -160,6 +162,19 @@ func ReadIncomingMessagesFromRabbit() {
 	log.Println("[AMQP] Queue Declared")
 	log.Println(q.Name)
 
+	// messages, err := ch.Consume("events", "", true, false, false, false, nil)
+	// if err != nil {
+	// 	log.Fatalf("Failed to declare a consumer: %v", err)
+	// }
+
+	// go func() {
+	// 	log.Println("FIRST CONSUME: I'm inside the go routine for messages")
+	// 	for mymessage := range messages {
+	// 		log.Println("FIRST CONSUME: HI")
+	// 		log.Printf("Received a message: %s", mymessage.Body)
+	// 	}
+	// }()
+
 	msgs, err := ch.Consume(
 		"events", // queue
 		"",       // consumer
@@ -175,42 +190,59 @@ func ReadIncomingMessagesFromRabbit() {
 	log.Println("[AMQP] Consumer Declared")
 
 	go func() {
-		for d := range msgs {
+		for msg := range msgs {
 			log.Println("HELLO")
-			log.Printf("Received a message: %s", d.Body)
-			// log.Println("Delivery:")
-			// log.Println(d)
+			log.Printf("Received a message: %s", msg.Body)
+			log.Println("Delivery:")
 
-			// msg.Ack(false)
-			// newMsg := &Message{}
-			// json.Unmarshal(msg.Body, newMsg)
+			msg.Ack(false)
+			newMsg := &Message{}
+			json.Unmarshal(msg.Body, newMsg)
 
-			// for userID, conn := range socketStore.Connections {
-			// 	// Case: The channel is private and user is a member OR the channel is public
-			// 	// AKA NOT(the channel is private and user is NOT a member)
-			// 	if !(len(newMsg.UserIDs) > 0 && !contains(userID, newMsg.UserIDs)) {
-			// 		data := []byte("Unrecognized Control Message Type")
-			// 		switch newMsg.Type {
-			// 		case "channel-new", "channel-update":
-			// 			data = []byte(newMsg.Channel)
-			// 		case "channel-delete":
-			// 			data = []byte(newMsg.ChannelID)
-			// 		case "message-new", "message-update":
-			// 			log.Println("New Message: ")
-			// 			log.Println(newMsg.UserMessage)
-			// 			data = []byte(newMsg.UserMessage)
-			// 		case "message-delete":
-			// 			data = []byte(newMsg.UserMessageID)
-			// 		}
+			for userID, conn := range socketStore.Connections {
+				// Write data to WebSocket connection
+				if err := conn.WriteMessage(TextMessage, []byte(msg.Body)); err != nil {
+					fmt.Println("Error writing message to WebSocket connection.", err)
+				}
+				// Case: The channel is private and user is a member OR the channel is public
+				// AKA NOT(the channel is private and user is NOT a member)
+				if !(len(newMsg.UserIDs) > 0 && !contains(userID, newMsg.UserIDs)) {
+					data := []byte("Unrecognized Control Message Type")
+					switch newMsg.Type {
+					case "channel-new", "channel-update":
+						data = []byte(newMsg.Channel)
+					case "channel-delete":
+						data = []byte(newMsg.ChannelID)
+					case "message-new", "message-update":
+						log.Println("New Message: ")
+						log.Println(newMsg.UserMessage)
+						data = []byte(newMsg.UserMessage)
+					case "message-delete":
+						data = []byte(newMsg.UserMessageID)
+					}
 
-			// 		// Write data to WebSocket connection
-			// 		if err := conn.WriteMessage(TextMessage, data); err != nil {
-			// 			fmt.Println("Error writing message to WebSocket connection.", err)
-			// 		}
-			// 	}
-			// }
+					// Write data to WebSocket connection
+					if err := conn.WriteMessage(TextMessage, data); err != nil {
+						fmt.Println("Error writing message to WebSocket connection.", err)
+					}
+				}
+			}
 		}
 	}()
+
+	body := "Hello World!"
+	err = ch.Publish(
+		"",       // exchange
+		"events", // routing key
+		false,    // mandatory
+		false,    // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(body),
+		})
+	if err != nil {
+		log.Fatalf("Failed to publish: %v", err)
+	}
 }
 
 func contains(userID int64, userIDs []int64) bool {
