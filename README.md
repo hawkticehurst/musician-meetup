@@ -2,9 +2,9 @@
 
 ## Project Description
 
-Our target audience is people who want to play music in a group. We want to build a platform in which people can find others to form music ensembles and enjoy playing music together. 
+Our target audience is people who want to play music together. We want to build a platform that allows people to create music meetup events and facilitates musicians being able to enjoy playing music together. 
 
-It can be hard for people playing an instrument to find people playing similar instruments, or an ensemble/band may be looking for a certain player to join their group (Ex: Jazz band needs a bass player). This platform will allow people to post public meetup events and message other players. This platform will also allow users to learn from other players nearby.
+It can be hard for people playing an instrument to find people playing similar instruments or a group/band that may be looking for a player to join their group (i.e. a Jazz band needs a bass player). This platform will allow people to post public meetup events and message other players. This platform will also allow users to learn from other players nearby.
 
 As developers, we are intrigued by the challenge that live-messaging with web sockets presents. We are also interested to see if we can create a seamless transition for users from chatting to creating meetups. 
 
@@ -12,7 +12,7 @@ As developers, we are intrigued by the challenge that live-messaging with web so
 
 ### Infrastructure
 
-Users will interact exclusively with our web UI Docker container (hosted on AWS). The web UI container will interact with a API Gateway services (via a REST API) that will facilitate communication with all the other services in our backend. User, meetup, and chat information will be stored in a MySQL database, and session information will be stored in a Redis database. 
+Users will interact exclusively with our web UI Docker container (hosted on AWS). The web interface container will interact with an API Gateway service (via a REST API) that will authenticate users and facilitate communication with all the other microservices in our backend. User, meetup, and chat information will be stored in a MySQL database container, and session information will be stored in a Redis database. We also use a RabbitMQ container as a queue that will notify each live WebSockets connection that a new chat message has been sent to any given chat.
 
 ### Service Architecture
 
@@ -26,44 +26,57 @@ Users will interact exclusively with our web UI Docker container (hosted on AWS)
 | P0 (High) | As a user | I want to create public meetup events that other music players can discover |
 | P0 (High) | As a user | I want to be able to view meetup events that other users have created |
 | P0 (High) | As a user | I want to chat with other music players to plan meetups and discuss music together |
-| P1 (Med) | As a user | I want to be able to join meetup events that are already created |
+| P1 (Med) | As a user | I want to be able to join meetup events that have already been created |
 
 
 **Story #1: I want to be able to create a user account and log in**
 
-We will create a **Dockerized** **Go** web microservice that acts as an API gateway. This web service will expose a REST API (over port 443) that the Web UI can call. This gateway will facilitate user creation and authentication.
+We will create a **Dockerized** **Go** web microservice that acts as an API gateway. This web service will expose a REST API (over port 443) that the Web UI can call. This gateway will facilitate user account creation and authentication.
 
 The service will maintain a connection to our **MySQL** database (over port 3306) in order to save user information. The service will also maintain a connection to our **Redis** database (over port 6379) in order to create, track, and delete user sessions.
 
 **Story #2: I want to create public meetup events that other music players can discover**
 
-We will create a **Dockerized** **Go** web microservice for creating, storing, and deleting meetup events. This web service will expose a REST API (over port 80) that the API Gateway can call. 
+We will create a **Dockerized** **Node.js** web microservice for creating, storing, and deleting meetup events. This web service will expose a REST API (over port 80) that the API Gateway can call. 
 
 The service will maintain a connection to our **MySQL** database (over port 3306) in order to store meetup information.
 
 **Story #3: I want to be able to view meetup events that other users have created**
 
- This is an augmentation to the above **Dockerized** **Go** web microservice that will retrieve all meetup events from our MySQL database (over port 3306) and return them to the client to be displayed via the Web UI.
+ This is an augmentation to the above **Dockerized** **Node.js** web microservice that will retrieve all meetup events from our **MySQL** database (over port 3306) and return them to the client to be displayed via the Web UI.
 
 **Story #4: I want to chat with other music players to plan meetups and discuss music together**
 
-We will create a **Dockerized** **Node.js** web microservice to facilitate messaging between users. This web service will expose a REST API (over port 80) that the API Gateway can call. This messaging service will be powered via **Web Sockets** and maintain a connection to our **MySQL** persistent database (over port 3306) to maintain messaging history.
+We will create a **Dockerized** **Node.js** web microservice to facilitate messaging between users. This web service will expose a REST API (over port 80) that the API Gateway can call. This messaging service will maintain a connection to our **MySQL** database (over port 3306) to maintain messaging history.
+
+When a new message is created, this microservice will notify a **RabbitMQ** queue of this event. The new message event will be consumed by the API gateway and write the contents of the new message to every live WebSocket connection that the gateway currently has stored.
 
 **Story #5: I want to be able to join meetup events that are already created**
 
-This will be an update to our Meetup web microservice. That will implement a REST API PATCH update to add the user to the meetup.
+This will be an update to our **Dockerized** **Node.js** Meetup microservice. This update will implement a REST API PATCH update that will add the user to the given meetup.
 
 The service will maintain a connection to our **MySQL** database (over port 3306) in order to store and update this information.
 
 ## API Endpoints
 
-/v1/meetups/    (Homepage)
+/v1/users
+/v1/users/
+/v1/sessions
+/v1/sessions/
+/v1/ws
+/v1/channels
+/v1/channels/
+/v1/messages/
+/v1/events
+/v1/events/
+
+/v1/meetups/
 * GET: Respond with a cardview of public meetups that users want to organize, only viewable if signed in
 - 200: Retrieve and return all meetups information
 - 401: No sessionID or user not logged in
 - 500: Server error
 
-/v1/meetups/{meetupID}    (Meetup page)
+/v1/meetups/{meetupID}
 * GET: Respond with a struct with info on the given meetup
 - 200: Retrieve and return all the meetup's information
 - 401: No sessionID or user not logged in
