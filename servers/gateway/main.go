@@ -109,20 +109,12 @@ func main() {
 	mux := http.NewServeMux()
 	wrappedMux := handlers.NewCORSHeader(mux)
 
-	stringSummaryAddr := strings.Split(os.Getenv("SUMMARYADDR"), ",")
 	stringMessageAddr := strings.Split(os.Getenv("MESSAGESADDR"), ",")
 	stringMeetupAddr := strings.Split(os.Getenv("MEETUPADDR"), ",")
-	if len(stringSummaryAddr) == 0 || len(stringMessageAddr) == 0 || len(stringMeetupAddr) == 0 {
-		err := fmt.Errorf("Environment variables SUMMARYADDR, MESSAGESADDR, and MEETUPADDR should be set.\nSUMMARYADDR: %s\nMESSAGESADDR: %s\nMEETUPADDR: %s", stringSummaryAddr, stringMessageAddr, stringMeetupAddr)
+	if len(stringMessageAddr) == 0 || len(stringMeetupAddr) == 0 {
+		err := fmt.Errorf("Environment variables MESSAGESADDR, and MEETUPADDR should be set.\nMESSAGESADDR: %s\nMEETUPADDR: %s", stringMessageAddr, stringMeetupAddr)
 		fmt.Println(err.Error())
 		os.Exit(1)
-	}
-
-	lenSummary := len(stringSummaryAddr)
-	urlSummaryAddr := make([]*url.URL, lenSummary)
-	for i, stringURL := range stringSummaryAddr {
-		urlAddr, _ := url.Parse(stringURL)
-		urlSummaryAddr[i] = urlAddr
 	}
 
 	lenMessage := len(stringMessageAddr)
@@ -139,15 +131,12 @@ func main() {
 		urlMeetupAddr[i] = urlAddr
 	}
 
-	summaryDirector := CustomDirector(urlSummaryAddr, sessionKey, redisStore)
 	messageDirector := CustomDirector(urlMessageAddr, sessionKey, redisStore)
 	meetupDirector := CustomDirector(urlMeetupAddr, sessionKey, redisStore)
 
-	summaryProxy := &httputil.ReverseProxy{Director: summaryDirector}
 	messagingProxy := &httputil.ReverseProxy{Director: messageDirector}
 	meetupProxy := &httputil.ReverseProxy{Director: meetupDirector}
 
-	mux.Handle("/v1/summary", summaryProxy)
 	mux.Handle("/v1/channels", messagingProxy)
 	mux.Handle("/v1/channels/", messagingProxy)
 	mux.Handle("/v1/messages/", messagingProxy)
