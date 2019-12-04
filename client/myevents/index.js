@@ -119,7 +119,7 @@
       title.className = 'card-title';
 
       let datetime = document.createElement('p');
-      datetime.innerText = data.time;
+      datetime.innerText = data.datetime;
       datetime.className = 'card-text';
 
       let location = document.createElement('p');
