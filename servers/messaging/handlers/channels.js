@@ -548,7 +548,7 @@ function sendMessageToRabbitMQ(message) {
 
       // Send the given message
       channel.sendToQueue(queue, JSON.stringify(message), { persistent: true });
-      console.log("Sent to RabbitMQ: %s", JSON.stringify(sendMessageObject));
+      console.log("Sent to RabbitMQ: %s", JSON.stringify(message));
     });
   });
 
