@@ -8,6 +8,7 @@
     const LOGOUT_URL = "https://api.info441summary.me/v1/sessions/mine";
     const JOINEVENT_URL = "https://api.info441summary.me/v1/events/join";
 
+
     /**
      *  Functions that will be called once the window is loaded
      *  Submit button will get click event listener and call fetchUrlSummary
@@ -76,9 +77,25 @@
     }
 
 
-    const displayCards = (info) => {
+    const displayCards = async (info) => {
         for (var i = 0; i < info.length; i++) {
             let data = info[i];
+            let joinBtn = document.createElement("button");
+            let isMember = await userIsMember(data.id);
+            if(isMember) {
+                joinBtn.innerText = "You are member of this event";
+                joinBtn.classList.add("btn btn-secondary");
+            } else {
+                joinBtn.innerText = "Join Event";
+                joinBtn.setAttribute("type", "button");
+                joinBtn.classList.add("btn");
+                joinBtn.classList.add("btn-primary");
+                joinBtn.classList.add("join-btn");
+                joinBtn.addEventListener("click", function () {
+                    joinBtn.disabled = true;
+                    joinEvent(data.id);
+                });
+            }
             let card = document.createElement('div');
             card.className = 'card';
 
@@ -97,17 +114,6 @@
             let description = document.createElement('p');
             description.innerText = data.description;
             description.className = 'card-text';
-
-            let joinBtn = document.createElement("button");
-            joinBtn.innerText = "Join Event";
-            joinBtn.setAttribute("type", "button");
-            joinBtn.classList.add("btn");
-            joinBtn.classList.add("btn-primary");
-            joinBtn.classList.add("join-btn");
-            joinBtn.addEventListener("click", function () {
-                joinBtn.disabled = true;
-                joinEvent(data.id);
-            });
 
             card.appendChild(title);
             card.appendChild(datetime);
@@ -211,6 +217,23 @@
         } else {
             return Promise.reject(new Error(response.status + ": " + response.statusText));
         }
+    }
+
+    //Check if user is part of event
+    const userIsMember = async (eventID) => {
+        const response = await fetch(JOINEVENT_URL, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Authorization': getAuthToken()
+            }
+        });
+        const result = await response.json();
+        for (let i = 0; i < result.length; i++) {
+            if(result[i].id == eventID) {
+                return true;
+            }
+        }
+        return false; 
     }
 
 })();
