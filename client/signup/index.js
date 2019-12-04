@@ -1,52 +1,52 @@
 (function () {
-    "use strict";
-  
-    // Remember to always run the main.go file on port 4000 (vs the default port 80)
-    // const BASE_URL = "http://localhost:4000/v1/summary";
-  
-    const BASE_URL = "https://api.info441summary.me/v1/users";
-  
-    /**
-     *  Functions that will be called once the window is loaded
-     *  Submit button will get click event listener and call fetchUrlSummary
-     */
-    window.addEventListener("load", () => {
-      const button = id('submit');
-      button.addEventListener('click', function(event){
-        event.preventDefault();
-        createUser();
-      });
+  "use strict";
+
+  // Remember to always run the main.go file on port 4000 (vs the default port 80)
+  // const BASE_URL = "http://localhost:4000/v1/summary";
+
+  const BASE_URL = "https://api.info441summary.me/v1/users";
+
+  /**
+   *  Functions that will be called once the window is loaded
+   *  Submit button will get click event listener and call fetchUrlSummary
+   */
+  window.addEventListener("load", () => {
+    const button = id('submit');
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      createUser();
     });
+  });
 
-    const createUser = () => {
-        const newUser = {
-          firstName: idValue('FirstName'),
-          lastName: idValue('LastName'),
-          email: idValue('Email'),
-          userName: idValue('UserName'),
-          password: idValue('Password'),
-          passwordConf: idValue('PasswordConf')
-        }
-        fetch(BASE_URL, {
-          method: 'POST', // *GET, POST, PUT, DELETE, etc.
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': getAuthToken()
-          },
-          body: JSON.stringify(newUser) // body data type must match "Content-Type" header
-        }).then(checkStatus)
-        .then(handleLogIn)
-        .then(redirect)
-        .catch(displayError)
+  const createUser = () => {
+    const newUser = {
+      firstName: idValue('FirstName'),
+      lastName: idValue('LastName'),
+      email: idValue('Email'),
+      userName: idValue('UserName'),
+      password: idValue('Password'),
+      passwordConf: idValue('PasswordConf')
     }
+    fetch(BASE_URL, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': getAuthToken()
+      },
+      body: JSON.stringify(newUser) // body data type must match "Content-Type" header
+    }).then(checkStatus)
+      // .then(handleLogIn)
+      .then(redirect)
+      .catch(displayError)
+  }
 
-    const handleLogIn = (response) => {
-      document.cookie = "auth=" + response.headers.get("authorization");
-    }
-  
-    const redirect = () => {
-      window.location = "../browse/index.html";
-    }
+  // const handleLogIn = (response) => {
+  //   document.cookie = "auth=" + response.headers.get("authorization");
+  // }
+
+  const redirect = () => {
+    window.location = "../index.html";
+  }
 
   /**
    * Function to handle the result of an unsuccessful fetch call
@@ -68,7 +68,7 @@
   }
 
 
-/* ------------------------------ Helper Functions  ------------------------------ */
+  /* ------------------------------ Helper Functions  ------------------------------ */
 
   /**
    * Returns the element that has the ID attribute with the specified value.
