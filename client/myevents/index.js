@@ -37,13 +37,18 @@
       console.log("Connection Closed");
     };
     sock.onmessage = (msg) => {
-      console.log("Message received " + msg.data);
-
+      //console.log("Message received " + msg.data);
+      //console.log("Type of msg.data: " + typeof(msg.data));
       // let info2 = JSON.parse(msg.data);
       // console.log("Parsed Info: " + JSON.stringify(info2))
 
-      let info = JSON.parse(msg.data).message;
-      console.log("Parsed Info: " + JSON.stringify(info))
+      let info = "";
+      try {
+          info = JSON.parse(msg.data).message;
+      } catch(e) {
+          console.log(e);
+      }
+      //console.log("Parsed Info: " + JSON.stringify(info))
 
       if (info.channelID == CURR_CHANNEL) {
 
@@ -95,7 +100,7 @@
 
   const displayCards = (info) => {
     for (var i = 0; i < info.length; i++) {
-      console.log("event: " + JSON.stringify(info[i]));
+      //console.log("event: " + JSON.stringify(info[i]));
       let data = info[i];
       let card = document.createElement('div');
       card.className = 'card';
