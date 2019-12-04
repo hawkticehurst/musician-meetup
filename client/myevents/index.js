@@ -124,7 +124,11 @@
         body: JSON.stringify(messageJSON)
       })
         .then(checkStatus)
-        .then(function () {
+        .then(function (response) {
+          console.log("Successful check status");
+        })
+        .then(function (response) {
+          console.log("Inside getChan anonymous function");
           getChannel(CURR_CHANNEL);
         })
         .catch(displayErrorHomePage);
