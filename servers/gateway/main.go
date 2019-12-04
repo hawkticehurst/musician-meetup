@@ -115,8 +115,6 @@ func main() {
 	summaryProxy := &httputil.ReverseProxy{Director: summaryDirector}
 	messagingProxy := &httputil.ReverseProxy{Director: messageDirector}
 
-	handlers.ReadIncomingMessagesFromRabbit()
-
 	mux.Handle("/v1/summary", summaryProxy)
 	mux.Handle("/v1/channels", messagingProxy)
 	mux.Handle("/v1/channels/", messagingProxy)
@@ -129,7 +127,10 @@ func main() {
 	mux.HandleFunc("/v1/sessions", hctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/", hctx.SpecificSessionHandler)
 
+	handlers.ReadIncomingMessagesFromRabbit()
+	log.Println("[AMQP] Got back to main.go")
 	mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
+	log.Println("[AMQP] web socket handler set")
 
 	log.Printf("Server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))

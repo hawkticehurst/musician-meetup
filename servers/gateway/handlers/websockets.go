@@ -133,6 +133,7 @@ func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Req
 func ReadIncomingMessagesFromRabbit() {
 	// Connect to RabbitMQ server
 	mqConn, err := amqp.Dial("amqp://guest:guest@rabbitmqserver:5672/")
+	log.Println("[AMQP] Dialed")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer mqConn.Close()
 
@@ -140,6 +141,7 @@ func ReadIncomingMessagesFromRabbit() {
 	ch, err := mqConn.Channel()
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
+	log.Println("[AMQP] Channel Opened")
 
 	// Connect to RabbitMQ Queue
 	q, err := ch.QueueDeclare(
@@ -151,6 +153,7 @@ func ReadIncomingMessagesFromRabbit() {
 		nil,      // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
+	log.Println("[AMQP] Queue Declared")
 
 	msgs, err := ch.Consume(
 		q.Name, // queue
@@ -162,8 +165,10 @@ func ReadIncomingMessagesFromRabbit() {
 		nil,    // args
 	)
 	failOnError(err, "Failed to register a consumer")
+	log.Println("[AMQP] Consume Started")
 
 	forever := make(chan bool)
+	log.Println("[AMQP] forever created")
 
 	go func() {
 		for d := range msgs {
@@ -198,6 +203,7 @@ func ReadIncomingMessagesFromRabbit() {
 	}()
 
 	<-forever
+	log.Println("[AMQP] after <- forever")
 }
 
 func contains(userID int64, userIDs []int64) bool {
