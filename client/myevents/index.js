@@ -91,6 +91,7 @@
   }
 
   const getChannel = (channelID) => {
+    console.log("getChannel() ran");
     //get all messages
     const channelURL = CHANNEL_URL + channelID;
     fetch(channelURL, {
