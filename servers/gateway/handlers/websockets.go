@@ -130,14 +130,18 @@ func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Req
 // correct WebSocket connections
 func ReadIncomingMessagesFromRabbit() {
 	// Connect to RabbitMQ server
-	mqConn, err := amqp.Dial("amqp://guest:guest@rabbitmqserver:5672/")
-	log.Println("[AMQP] Dialed")
-	failOnError(err, "Failed to connect to RabbitMQ")
-	defer mqConn.Close()
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmqserver:5672/")
+	if err != nil {
+		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
+	}
+	defer conn.Close()
+	log.Println("[AMQP] Connection Opened")
 
 	// Open a RabbitMQ channel
-	ch, err := mqConn.Channel()
-	failOnError(err, "Failed to open a channel")
+	ch, err := conn.Channel()
+	if err != nil {
+		log.Fatalf("Failed to open channel: %v", err)
+	}
 	defer ch.Close()
 	log.Println("[AMQP] Channel Opened")
 
@@ -150,10 +154,12 @@ func ReadIncomingMessagesFromRabbit() {
 		false,    // no-wait
 		nil,      // arguments
 	)
-	failOnError(err, "Failed to declare a queue")
+	if err != nil {
+		log.Fatalf("Failed to declare a queue: %v", err)
+	}
 	log.Println("[AMQP] Queue Declared")
 
-	msgs, err := ch.Consume(
+	messages, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
 		false,  // auto-ack
@@ -162,18 +168,18 @@ func ReadIncomingMessagesFromRabbit() {
 		false,  // no-wait
 		nil,    // args
 	)
-	failOnError(err, "Failed to register a consumer")
-	log.Println("[AMQP] Consume Started")
+	if err != nil {
+		log.Fatalf("Failed to declare a consumer: %v", err)
+	}
+	log.Println("[AMQP] Consumer Declared")
 
 	go func() {
-		for d := range msgs {
-			log.Printf("Received a message: %s", d.Body)
-			// log.Println("Delivery:")
-			// log.Println(d)
+		for msg := range messages {
+			log.Printf("Received a message: %s", msg.Body)
 
-			// d.Ack(false)
+			// msg.Ack(false)
 			// newMsg := &Message{}
-			// json.Unmarshal(d.Body, newMsg)
+			// json.Unmarshal(msg.Body, newMsg)
 
 			// for userID, conn := range socketStore.Connections {
 			// 	// Case: The channel is private and user is a member OR the channel is public
@@ -210,10 +216,4 @@ func contains(userID int64, userIDs []int64) bool {
 		}
 	}
 	return false
-}
-
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
 }
