@@ -91,7 +91,7 @@
   }
 
   const getChannel = (channelID) => {
-    console.log("getChannel() ran");
+    //console.log("getChannel() ran");
     //get all messages
     const channelURL = CHANNEL_URL + channelID;
     fetch(channelURL, {
@@ -116,7 +116,7 @@
       }
 
       const url = CHANNEL_URL + CURR_CHANNEL;
-      console.log("sending message");
+      //console.log("sending message");
       fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -126,13 +126,13 @@
         body: JSON.stringify(messageJSON)
       })
         .then(checkStatus)
-        .then(refreshChannel)
+        //.then(refreshChannel)
         .catch(displayErrorHomePage);
     }
   }
 
   const refreshChannel = (response) => {
-    console.log("Inside refresh channel function");
+    //console.log("Inside refresh channel function");
     getChannel(CURR_CHANNEL);
     return response;
   }
@@ -211,7 +211,7 @@
    *                   Promise result
    */
   const checkStatus = (response) => {
-    console.log("inside check status, status code:" + response.status)
+    //console.log("inside check status, status code:" + response.status)
     if (response.status >= 200 && response.status < 300) {
       return response;
     } else {
