@@ -199,9 +199,10 @@ func ReadIncomingMessagesFromRabbit() {
 			newMsg := &Message{}
 			json.Unmarshal(msg.Body, newMsg)
 
-			for userID, conn := range socketStore.Connections {
+			for userID, socketconn := range socketStore.Connections {
+				log.Println("Websocket connection detected: " + string(userID))
 				// Write data to WebSocket connection
-				if err := conn.WriteMessage(TextMessage, []byte(msg.Body)); err != nil {
+				if err := socketconn.WriteMessage(TextMessage, []byte(msg.Body)); err != nil {
 					fmt.Println("Error writing message to WebSocket connection.", err)
 				}
 				// Case: The channel is private and user is a member OR the channel is public
@@ -222,7 +223,7 @@ func ReadIncomingMessagesFromRabbit() {
 					}
 
 					// Write data to WebSocket connection
-					if err := conn.WriteMessage(TextMessage, data); err != nil {
+					if err := socketconn.WriteMessage(TextMessage, data); err != nil {
 						fmt.Println("Error writing message to WebSocket connection.", err)
 					}
 				}
