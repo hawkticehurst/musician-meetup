@@ -167,11 +167,14 @@ func ReadIncomingMessagesFromRabbit() {
 	failOnError(err, "Failed to register a consumer")
 	log.Println("[AMQP] Consume Started")
 
-	forever := make(chan bool)
-	log.Println("[AMQP] forever created")
+	// forever := make(chan bool)
+	// log.Println("[AMQP] forever created")
 
 	go func() {
+		log.Println("Inside goroutine")
 		for d := range msgs {
+			log.Println("Delivery:")
+			log.Println(d)
 
 			d.Ack(false)
 			newMsg := &Message{}
@@ -188,6 +191,8 @@ func ReadIncomingMessagesFromRabbit() {
 					case "channel-delete":
 						data = []byte(newMsg.ChannelID)
 					case "message-new", "message-update":
+						log.Println("New Message: ")
+						log.Println(newMsg.UserMessage)
 						data = []byte(newMsg.UserMessage)
 					case "message-delete":
 						data = []byte(newMsg.UserMessageID)
@@ -202,8 +207,9 @@ func ReadIncomingMessagesFromRabbit() {
 		}
 	}()
 
-	<-forever
-	log.Println("[AMQP] after <- forever")
+	log.Println("Goroutine executed")
+	// <-forever
+	// log.Println("[AMQP] after <- forever")
 }
 
 func contains(userID int64, userIDs []int64) bool {
