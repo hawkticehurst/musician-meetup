@@ -18,8 +18,57 @@ import (
 
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/streadway/amqp"
+	"github.com/gorilla/websocket"
 )
+
+// Control messages for websocket
+const (
+	// TextMessage denotes a text data message. The text message payload is
+	// interpreted as UTF-8 encoded text data.
+	TextMessage = 1
+
+	// BinaryMessage denotes a binary data message.
+	BinaryMessage = 2
+
+	// CloseMessage denotes a close control message. The optional message
+	// payload contains a numeric code and text. Use the FormatCloseMessage
+	// function to format a close message payload.
+	CloseMessage = 8
+
+	// PingMessage denotes a ping control message. The optional message payload
+	// is UTF-8 encoded text.
+	PingMessage = 9
+
+	// PongMessage denotes a pong control message. The optional message payload
+	// is UTF-8 encoded text.
+	PongMessage = 10
+)
+
+// Message represents a RabbitMQ message
+type Message struct {
+	Type          string
+	Channel       string `json:"channel"`
+	ChannelID     string `json:"channelID"`
+	UserMessage   string `json:"message"`
+	UserMessageID string `json:"messageID"`
+	UserIDs       []int64
+}
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		// This function's purpose is to reject websocket upgrade requests if the
+		// origin of the websockete handshake request is coming from unknown domains.
+		// This prevents some random domain from opening up a socket with your server.
+		// TODO: make sure you modify this for your HW to check if r.Origin is your host
+
+		return true
+	},
+}
+
+// Data structure containing every current websocket connection
+var socketStore *handlers.SocketStore = handlers.NewSocketStore()
 
 // main is the main entry point for the server
 func main() {
@@ -110,57 +159,11 @@ func main() {
 	mux.HandleFunc("/v1/sessions", hctx.SessionsHandler)
 	mux.HandleFunc("/v1/sessions/", hctx.SpecificSessionHandler)
 
-	// handlers.ReadIncomingMessagesFromRabbit()
+	handlers.ReadIncomingMessagesFromRabbit()
 	mux.HandleFunc("/v1/ws", hctx.WebSocketConnectionHandler)
-
-	ConnectToRabbitMQ()
 
 	log.Printf("Server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
-}
-
-// ConnectToRabbitMQ connects to RabbitMQ and starts listening for messages
-func ConnectToRabbitMQ() {
-	conn, err := amqp.Dial("amqp://guest:guest@rabbitmqserver:5672/")
-	failOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
-
-	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
-	defer ch.Close()
-
-	q, err := ch.QueueDeclare(
-		"events", // name
-		true,     // durable
-		false,    // delete when unused
-		false,    // exclusive
-		false,    // no-wait
-		nil,      // arguments
-	)
-	failOnError(err, "Failed to declare a queue")
-
-	msgs, err := ch.Consume(
-		q.Name, // queue
-		"",     // consumer
-		false,  // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
-	)
-	failOnError(err, "Failed to register a consumer")
-
-	go func() {
-		for d := range msgs {
-			log.Printf("RabbitMQ received a message: %s", d.Body)
-		}
-	}()
-}
-
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
 }
 
 // Director represents a director function
@@ -201,4 +204,13 @@ func CustomDirector(targets []*url.URL, sessionKey string, redisstore *sessions.
 			r.URL.Scheme = "http"
 		}
 	}
+}
+
+func contains(userID int64, userIDs []int64) bool {
+	for _, ID := range userIDs {
+		if ID == userID {
+			return true
+		}
+	}
+	return false
 }

@@ -12,7 +12,7 @@ async function getMemberIDs(channelID, db) {
       }
       return { members: memberIDsArray, error: null };
     } catch (err) {
-      return { members: null, error: err };
+      return { members: [], error: err };
     }
 }
 
