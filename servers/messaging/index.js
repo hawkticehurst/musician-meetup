@@ -30,7 +30,25 @@ app.use(multer().none());
 // along in the request object
 app.use(db.getDB);
 
-app.use(rabbitmq.getRabbitMQConnection);
+//app.use(rabbitmq.getRabbitMQConnection);
+amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function(error0, connection) {
+  if (error0) {
+      throw error0;
+  }
+  amqpChannel = connection.createChannel(function(error1, channel) {
+      if (error1) {
+          throw error1;
+      }
+      var queue = 'events';
+
+      channel.assertQueue(queue, {
+          durable: true
+      });
+      console.log("[AMQP] connected");
+      console.log("[AMQP] channel: " + channel);
+  });
+  console.log("[AMQP] connection: " + connection);
+});
 
 // ----- API Routes -----
 app.get("/v1/channels", channels.getAllChannels);
@@ -55,3 +73,4 @@ app.get("/v1/events/join", events.getJoinedEvents);
 app.listen(port, host, function() {
   console.log(`Server is listening at ${addr}...`);
 });
+

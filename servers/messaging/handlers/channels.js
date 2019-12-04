@@ -278,7 +278,27 @@ async function sendMessage(req, res) {
   }
 
   req.amqpChannel.sendToQueue("events", JSON.stringify(sendMessageObject), { persistent: true });
+
+  amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function(error0, connection) {
+    if (error0) {
+        throw error0;
+    }
+    amqpChannel = connection.createChannel(function(error1, channel) {
+      if (error1) {
+          throw error1;
+      }
+      var queue = 'events';
+
+      channel.sendToQueue(queue, JSON.stringify(sendMessageObject), { persistent: true });
+
+      console.log("[AMQP] connected");
+      console.log("[AMQP] channel: " + channel);
+    });
+    console.log("[AMQP] connection: " + connection);
+  });
+
   console.log(" [x] Sent %s", JSON.stringify(sendMessageObject));
+  console.log("Is this working");
 
   res.status(201).json(newMsg);
 }
