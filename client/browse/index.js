@@ -58,7 +58,8 @@
             },
             body: ""// body data type must match "Content-Type" header
         }).then(checkStatus)
-            .then(window.location.pathname = '../').catch(displayErrorHomePage)
+            .then(window.location.pathname = '../')
+            .catch(displayErrorHomePage)
     }
 
     const getEvents = () => {

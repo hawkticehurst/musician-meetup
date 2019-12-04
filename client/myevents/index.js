@@ -116,6 +116,7 @@
       }
 
       const url = CHANNEL_URL + CURR_CHANNEL;
+      console.log("sending message");
       fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
@@ -125,15 +126,15 @@
         body: JSON.stringify(messageJSON)
       })
         .then(checkStatus)
-        .then(function (response) {
-          console.log("Successful check status");
-        })
-        .then(function (response) {
-          console.log("Inside getChan anonymous function");
-          getChannel(CURR_CHANNEL);
-        })
+        .then(refreshChannel)
         .catch(displayErrorHomePage);
     }
+  }
+
+  const refreshChannel = (response) => {
+    console.log("Inside refresh channel function");
+    getChannel(CURR_CHANNEL);
+    return response;
   }
 
   const displayMessages = (data) => {
@@ -210,6 +211,7 @@
    *                   Promise result
    */
   const checkStatus = (response) => {
+    console.log("inside check status, status code:" + response.status)
     if (response.status >= 200 && response.status < 300) {
       return response;
     } else {
