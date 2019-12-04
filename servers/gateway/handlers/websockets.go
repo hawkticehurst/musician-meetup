@@ -158,15 +158,16 @@ func ReadIncomingMessagesFromRabbit() {
 		log.Fatalf("Failed to declare a queue: %v", err)
 	}
 	log.Println("[AMQP] Queue Declared")
+	log.Println(q.Name)
 
-	messages, err := ch.Consume(
-		q.Name, // queue
-		"",     // consumer
-		false,  // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+	msgs, err := ch.Consume(
+		"events", // queue
+		"",       // consumer
+		false,    // auto-ack
+		false,    // exclusive
+		false,    // no-local
+		false,    // no-wait
+		nil,      // args
 	)
 	if err != nil {
 		log.Fatalf("Failed to declare a consumer: %v", err)
@@ -174,8 +175,11 @@ func ReadIncomingMessagesFromRabbit() {
 	log.Println("[AMQP] Consumer Declared")
 
 	go func() {
-		for msg := range messages {
-			log.Printf("Received a message: %s", msg.Body)
+		for d := range msgs {
+			log.Println("HELLO")
+			log.Printf("Received a message: %s", d.Body)
+			// log.Println("Delivery:")
+			// log.Println(d)
 
 			// msg.Ack(false)
 			// newMsg := &Message{}

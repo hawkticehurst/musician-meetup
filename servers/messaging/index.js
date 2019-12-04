@@ -45,6 +45,12 @@ amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function (error0, connec
     channel.assertQueue(queue, {
       durable: true
     });
+
+    // channel.consume(queue, function(msg) {
+    //   console.log(" [AMQP] Received %s", msg.content.toString());
+    // }, {
+    //     noAck: true
+    //   });
   });
 });
 
