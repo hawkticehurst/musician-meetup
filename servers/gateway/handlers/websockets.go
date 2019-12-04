@@ -171,36 +171,38 @@ func ReadIncomingMessagesFromRabbit() {
 	// log.Println("[AMQP] forever created")
 
 	go func() {
-		log.Println("Inside goroutine")
-		for d := range msgs {
-			log.Println("Delivery:")
-			log.Println(d)
+		for {
+			//log.Println("Inside goroutine")
+			for d := range msgs {
+				log.Println("Delivery:")
+				log.Println(d)
 
-			d.Ack(false)
-			newMsg := &Message{}
-			json.Unmarshal(d.Body, newMsg)
+				d.Ack(false)
+				newMsg := &Message{}
+				json.Unmarshal(d.Body, newMsg)
 
-			for userID, conn := range socketStore.Connections {
-				// Case: The channel is private and user is a member OR the channel is public
-				// AKA NOT(the channel is private and user is NOT a member)
-				if !(len(newMsg.UserIDs) > 0 && !contains(userID, newMsg.UserIDs)) {
-					data := []byte("Unrecognized Control Message Type")
-					switch newMsg.Type {
-					case "channel-new", "channel-update":
-						data = []byte(newMsg.Channel)
-					case "channel-delete":
-						data = []byte(newMsg.ChannelID)
-					case "message-new", "message-update":
-						log.Println("New Message: ")
-						log.Println(newMsg.UserMessage)
-						data = []byte(newMsg.UserMessage)
-					case "message-delete":
-						data = []byte(newMsg.UserMessageID)
-					}
+				for userID, conn := range socketStore.Connections {
+					// Case: The channel is private and user is a member OR the channel is public
+					// AKA NOT(the channel is private and user is NOT a member)
+					if !(len(newMsg.UserIDs) > 0 && !contains(userID, newMsg.UserIDs)) {
+						data := []byte("Unrecognized Control Message Type")
+						switch newMsg.Type {
+						case "channel-new", "channel-update":
+							data = []byte(newMsg.Channel)
+						case "channel-delete":
+							data = []byte(newMsg.ChannelID)
+						case "message-new", "message-update":
+							log.Println("New Message: ")
+							log.Println(newMsg.UserMessage)
+							data = []byte(newMsg.UserMessage)
+						case "message-delete":
+							data = []byte(newMsg.UserMessageID)
+						}
 
-					// Write data to WebSocket connection
-					if err := conn.WriteMessage(TextMessage, data); err != nil {
-						fmt.Println("Error writing message to WebSocket connection.", err)
+						// Write data to WebSocket connection
+						if err := conn.WriteMessage(TextMessage, data); err != nil {
+							fmt.Println("Error writing message to WebSocket connection.", err)
+						}
 					}
 				}
 			}
