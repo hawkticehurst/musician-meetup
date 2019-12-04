@@ -60,47 +60,7 @@ var upgrader = websocket.Upgrader{
 // Data structure containing every current websocket connection
 var socketStore *SocketStore = NewSocketStore()
 
-	// CloseMessage denotes a close control message. The optional message
-	// payload contains a numeric code and text. Use the FormatCloseMessage
-	// function to format a close message payload.
-	CloseMessage = 8
-
-	// PingMessage denotes a ping control message. The optional message payload
-	// is UTF-8 encoded text.
-	PingMessage = 9
-
-	// PongMessage denotes a pong control message. The optional message payload
-	// is UTF-8 encoded text.
-	PongMessage = 10
-)
-
-// Message represents a RabbitMQ message
-type Message struct {
-	Type          string
-	Channel       string `json:"channel"`
-	ChannelID     string `json:"channelID"`
-	UserMessage   string `json:"message"`
-	UserMessageID string `json:"messageID"`
-	UserIDs       []int64
-}
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		// This function's purpose is to reject websocket upgrade requests if the
-		// origin of the websockete handshake request is coming from unknown domains.
-		// This prevents some random domain from opening up a socket with your server.
-		// TODO: make sure you modify this for your HW to check if r.Origin is your host
-
-		return true
-	},
-}
-
-// Data structure containing every current websocket connection
-var socketStore *SocketStore = NewSocketStore()
-
-// MyWebSocketConnectionHandler upgrades a client connection to a WebSocket connection,
+// WebSocketConnectionHandler upgrades a client connection to a WebSocket connection,
 // regardless of what method is used in the request
 func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("Break 1, before getsessionid")
