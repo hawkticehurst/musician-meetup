@@ -147,7 +147,7 @@ async function createNewChannel(req, res) {
     "userIDs": memberIDs.members
   }
 
-  req.amqpChannel.sendToQueue("events", JSON.stringify(newChannelObject), { persistent: true });
+  //req.amqpChannel.sendToQueue("events", JSON.stringify(newChannelObject), { persistent: true });
   console.log(" [x] Sent %s", JSON.stringify(newChannelObject));
 
   res.status(201).json(newChannelWithID);
@@ -364,7 +364,7 @@ async function updateChannel(req, res) {
     "userIDs": memberIDs.members
   }
 
-  req.amqpChannel.sendToQueue("events", JSON.stringify(patchChannelObject), { persistent: true });
+  //req.amqpChannel.sendToQueue("events", JSON.stringify(patchChannelObject), { persistent: true });
   console.log(" [x] Sent %s", JSON.stringify(patchChannelObject));
 
   db.end();
@@ -413,7 +413,7 @@ async function deleteChannel(req, res) {
     "userIDs": memberIDs.members
   }
 
-  req.amqpChannel.sendToQueue("events", JSON.stringify(deleteChannelObject), { persistent: true });
+  //req.amqpChannel.sendToQueue("events", JSON.stringify(deleteChannelObject), { persistent: true });
   console.log(" [x] Sent %s", JSON.stringify(deleteChannelObject));
 
   db.end();
@@ -547,7 +547,7 @@ function sendMessageToRabbitMQ(message) {
       const queue = 'events';
 
       // Send the given message
-      channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), { persistent: true });
+      //channel.sendToQueue(queue, Buffer.from(JSON.stringify(message)), { persistent: true });
       console.log("Sent to RabbitMQ: %s", JSON.stringify(message));
     });
   });
