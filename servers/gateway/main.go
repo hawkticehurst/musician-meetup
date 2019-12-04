@@ -121,7 +121,7 @@ func ConnectToRabbitMQ() {
 
 	q, err := ch.QueueDeclare(
 		"events", // name
-		false,    // durable
+		true,     // durable
 		false,    // delete when unused
 		false,    // exclusive
 		false,    // no-wait
@@ -132,7 +132,7 @@ func ConnectToRabbitMQ() {
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		true,   // auto-ack
+		false,  // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
