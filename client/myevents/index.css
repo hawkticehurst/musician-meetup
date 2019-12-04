@@ -34,10 +34,6 @@ header {
   margin: 0;
 }
 
-.hidden {
-  display: none;
-}
-
 hr {
   height: 3px;
 }
@@ -70,6 +66,10 @@ hr {
   border-radius: 5px;
   padding: 10px;
   margin: 10px 0;
+}
+
+.hidden {
+  display: none;
 }
 
 /* 

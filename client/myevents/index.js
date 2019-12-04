@@ -4,7 +4,7 @@
   // Remember to always run the main.go file on port 4000 (vs the default port 80)
   // const BASE_URL = "http://localhost:4000/v1/summary";
 
-  const JOINEDCHANNELS_URL = "https://api.info441summary.me/v1/events/join";
+  const BASE_URL = "https://api.info441summary.me/v1/events/join";
   const LOGOUT_URL = "https://api.info441summary.me/v1/sessions/mine";
   const CHANNEL_URL = "https://api.info441summary.me/v1/channels/";
   let CURR_CHANNEL = undefined; // This is the currently opened channel id
@@ -81,7 +81,7 @@
   }
 
   const getEvents = () => {
-    fetch(JOINEDCHANNELS_URL, {
+    fetch(BASE_URL, {
       method: 'GET', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Authorization': getAuthToken()
@@ -95,6 +95,7 @@
 
   const displayCards = (info) => {
     for (var i = 0; i < info.length; i++) {
+      console.log("event: " + JSON.stringify(info[i]));
       let data = info[i];
       let card = document.createElement('div');
       card.className = 'card';
@@ -102,6 +103,9 @@
       card.addEventListener("click", function () {
         clearChannel();
         getChannel(data.channel);
+        resetChannelBgs();
+        showTextBar();
+        card.className = 'card bg-primary'
         CURR_CHANNEL = data.channel;
       });
 
@@ -126,6 +130,28 @@
       card.appendChild(location);
       card.appendChild(description);
       id("cards-container").appendChild(card);
+    }
+  }
+
+  const showTextBar = () => {
+    let chatContainer = id("chat-input-container");
+
+    chatContainer.classList.remove("d-none");
+
+    let chatInput = id("chat-input");
+
+    chatInput.classList.remove("d-none");
+
+    let sendBtn = id("send-btn");
+
+    sendBtn.classList.remove("d-none");
+  }
+
+  const resetChannelBgs = () => {
+    let cards = id("cards-container").querySelectorAll(".card"); 
+
+    for (let i = 0; i < cards.length; i++) {
+      cards[i].className = 'card';
     }
   }
 

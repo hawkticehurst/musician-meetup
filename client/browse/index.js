@@ -83,8 +83,10 @@
             let joinBtn = document.createElement("button");
             let isMember = await userIsMember(data.id);
             if(isMember) {
-                joinBtn.innerText = "You are member of this event";
-                joinBtn.classList.add("btn btn-secondary");
+                joinBtn.innerText = "You are a member of this event";
+                joinBtn.setAttribute("type", "button");
+                joinBtn.classList.add("btn");
+                joinBtn.classList.add("btn-secondary");
             } else {
                 joinBtn.innerText = "Join Event";
                 joinBtn.setAttribute("type", "button");

@@ -89,23 +89,22 @@ async function joinEvent(req, res) {
 async function getJoinedEvents(req, res) {
     const user = JSON.parse(req.get("X-User"));
     const db = req.db;
-    userEvents = [];
+    let userEvents = [];
     try {
-        const qryOne = "SELECT EventID FROM UsersJoinEvents WHERE UserID = ?;";
-        const qryTwo = "SELECT * FROM Events WHERE ID = ?;";
-        const events = await db.query(qryOne, [user.id]);
+        //const qryOne = "SELECT EventID FROM UsersJoinEvents WHERE UserID = ?;";
+        const qryOne = "SELECT * FROM Events WHERE ID IN (SELECT EventID FROM UsersJoinEvents WHERE UserID = ?);";
+        const events = await db.query(qryOne, user.id);
         for (let i = 0; i < events.length; i++) {
             const event = events[i];
-            const eventInfo = await db.query(qryTwo, [event]);
-            const eventStruct = {
-                "id": eventInfo.ID,
-                "title": eventInfo.Title,
-                "time": eventInfo.EventDateTime,
-                "channel": eventInfo.ChannelID,
-                "location": eventInfo.LocationOfEvent,
-                "description": eventInfo.DescriptionOfEvent
+            const eventInfo = {
+                "id": event.ID,
+                "title": event.Title,
+                "datetime": event.EventDateTime,
+                "channel": event.ChannelID,
+                "location": event.LocationOfEvent,
+                "description": event.DescriptionOfEvent
             }
-            userEvents.push(eventStruct);
+            userEvents.push(eventInfo);
         }
     } catch (err) {
         console.log(err.message);

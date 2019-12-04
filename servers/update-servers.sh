@@ -2,7 +2,6 @@
 
 export DOCKERNAME=$1
 
-docker pull $DOCKERNAME/summary
 docker pull $DOCKERNAME/gatewayserver
 docker pull $DOCKERNAME/messagingserver
 docker pull $DOCKERNAME/meetupserver
@@ -14,7 +13,6 @@ docker rm -f meetupserver
 docker rm -f mysqlserver
 docker rm -f gatewayserver
 docker rm -f redisserver
-docker rm -f summaryserver
 docker rm -f rabbitmqserver
 echo "✅  Current Docker Containers Stopped & Removed"
 
@@ -31,7 +29,6 @@ export MYSQL_ROOT_PASSWORD="testpwd"
 export DATABASE="infodb"
 export SESSIONKEY="key"
 export REDISADDR="redisserver:6379"
-export SUMMARYADDR="summaryserver"
 export MESSAGESADDR="messagingserver"
 export MEETUPADDR="meetupserver"
 export DSN="root:testpwd@tcp(mysqlserver:3306)/infodb"
@@ -46,7 +43,6 @@ docker run -d --network backendnetwork --hostname my-rabbit --name rabbitmqserve
 docker run -d --network backendnetwork --name messagingserver --restart unless-stopped -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e HOST=$HOST -e PORT=$PORT -e USER=$USER -e DATABASE=$DATABASE $DOCKERNAME/messagingserver
 docker run -d --network backendnetwork --name meetupserver --restart unless-stopped -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e HOST=$HOST -e PORT=$PORT -e USER=$USER -e DATABASE=$DATABASE $DOCKERNAME/meetupserver
 docker run -d --network backendnetwork --name mysqlserver -e MYSQL_USER=$USER -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DATABASE=$DATABASE $DOCKERNAME/mysqldb
-docker run -d --network backendnetwork --name gatewayserver --restart unless-stopped -p 443:443 -v /etc/letsencrypt:/etc/letsencrypt:ro -e TLSCERT=$TLSCERT -e TLSKEY=$TLSKEY -e REDISADDR=$REDISADDR -e SUMMARYADDR=$SUMMARYADDR -e MESSAGESADDR=$MESSAGESADDR -e MEETUPADDR=$MEETUPADDR -e SESSIONKEY=$SESSIONKEY -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e DSN=$DSN $DOCKERNAME/gatewayserver
+docker run -d --network backendnetwork --name gatewayserver --restart unless-stopped -p 443:443 -v /etc/letsencrypt:/etc/letsencrypt:ro -e TLSCERT=$TLSCERT -e TLSKEY=$TLSKEY -e REDISADDR=$REDISADDR -e MESSAGESADDR=$MESSAGESADDR -e MEETUPADDR=$MEETUPADDR -e SESSIONKEY=$SESSIONKEY -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e DSN=$DSN $DOCKERNAME/gatewayserver
 docker run -d --network backendnetwork --name redisserver redis
-docker run -d --network backendnetwork --name summaryserver $DOCKERNAME/summary
 echo "✅  Docker Containers Successfully Running"
