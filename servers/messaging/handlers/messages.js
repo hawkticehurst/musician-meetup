@@ -55,7 +55,7 @@ async function updateMsg(req, res) {
     "userIDs": memberIDs.members
   }
 
-  req.amqpChannel.sendToQueue("events", JSON.stringify(updateMessageObject), { persistent: true });
+  //req.amqpChannel.sendToQueue("events", JSON.stringify(updateMessageObject), { persistent: true });
   console.log(" [x] Sent %s", JSON.stringify(updateMessageObject));
 
   res.status(200).json(updatedMsg)
@@ -91,7 +91,7 @@ async function deleteMsg(req, res) {
     "userIDs": memberIDs.members
   }
 
-  req.amqpChannel.sendToQueue("events", JSON.stringify(deleteMessageObject), { persistent: true });
+  //req.amqpChannel.sendToQueue("events", JSON.stringify(deleteMessageObject), { persistent: true });
   console.log(" [x] Sent %s", JSON.stringify(deleteMessageObject));
 
   res.status(200).type("text").send("The message was deleted successfully.")
