@@ -48,11 +48,6 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		// This function's purpose is to reject websocket upgrade requests if the
-		// origin of the websockete handshake request is coming from unknown domains.
-		// This prevents some random domain from opening up a socket with your server.
-		// TODO: make sure you modify this for your HW to check if r.Origin is your host
-
 		return true
 	},
 }
@@ -63,29 +58,20 @@ var socketStore *SocketStore = NewSocketStore()
 // WebSocketConnectionHandler upgrades a client connection to a WebSocket connection,
 // regardless of what method is used in the request
 func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Break 1, before getsessionid")
-
 	// Check if user is authenticated (i.e. logged in)
 	_, err := sessions.GetSessionID(r, hc.SessionIDKey)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnauthorized)
-		log.Println("Websockets could not get session id")
 		return
 	}
-
-	log.Println("Break 2, before getstate")
 
 	// Get user information
 	sessionState := &SessionState{}
 	sessions.GetState(r, hc.SessionIDKey, hc.SessionStore, sessionState)
 	user := sessionState.User
 
-	log.Println("Break 3, before get origin")
-	log.Printf("Origin Header in websocket.go: %s", r.Header.Get("Origin"))
-
 	// Upgrade the connection to a web socket connection
 	if r.Header.Get("Origin") != "https://client.info441summary.me" {
-		// http.Error(w, "Websocket Connection Refused", 403)
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Websocket Connection Refused"))
 		log.Println("Websocket Connection Refused")
@@ -94,7 +80,6 @@ func (hc *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Req
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		//http.Error(w, "Failed to open websocket connection", 401)
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Failed to open websocket connection"))
 		log.Println("Failed to open websocket connectio")
@@ -136,16 +121,12 @@ func ReadIncomingMessagesFromRabbit() {
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
 	}
-	//defer conn.Close()
-	log.Println("[AMQP] Connection Opened")
 
 	// Open a RabbitMQ channel
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Fatalf("Failed to open channel: %v", err)
 	}
-	//defer ch.Close()
-	log.Println("[AMQP] Channel Opened")
 
 	// Connect to RabbitMQ Queue
 	q, err := ch.QueueDeclare(
@@ -159,48 +140,27 @@ func ReadIncomingMessagesFromRabbit() {
 	if err != nil {
 		log.Fatalf("Failed to declare a queue: %v", err)
 	}
-	log.Println("[AMQP] Queue Declared")
-	log.Println(q.Name)
-
-	// messages, err := ch.Consume("events", "", true, false, false, false, nil)
-	// if err != nil {
-	// 	log.Fatalf("Failed to declare a consumer: %v", err)
-	// }
-
-	// go func() {
-	// 	log.Println("FIRST CONSUME: I'm inside the go routine for messages")
-	// 	for mymessage := range messages {
-	// 		log.Println("FIRST CONSUME: HI")
-	// 		log.Printf("Received a message: %s", mymessage.Body)
-	// 	}
-	// }()
 
 	msgs, err := ch.Consume(
-		"events", // queue
-		"",       // consumer
-		false,    // auto-ack
-		false,    // exclusive
-		false,    // no-local
-		false,    // no-wait
-		nil,      // args
+		q.Name, // queue
+		"",     // consumer
+		false,  // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
 	)
 	if err != nil {
 		log.Fatalf("Failed to declare a consumer: %v", err)
 	}
-	log.Println("[AMQP] Consumer Declared")
 
 	go func() {
 		for msg := range msgs {
-			log.Println("HELLO")
-			log.Printf("Received a message: %s", msg.Body)
-			log.Println("Delivery:")
-
 			msg.Ack(false)
 			newMsg := &Message{}
 			json.Unmarshal(msg.Body, newMsg)
 
 			for userID, socketconn := range socketStore.Connections {
-				log.Println("Websocket connection detected: " + string(userID))
 				// Write data to WebSocket connection
 				if err := socketconn.WriteMessage(TextMessage, []byte(msg.Body)); err != nil {
 					fmt.Println("Error writing message to WebSocket connection.", err)
@@ -215,7 +175,6 @@ func ReadIncomingMessagesFromRabbit() {
 					case "channel-delete":
 						data = []byte(newMsg.ChannelID)
 					case "message-new", "message-update":
-						log.Println("New Message: ")
 						log.Println(newMsg.UserMessage)
 						data = []byte(newMsg.UserMessage)
 					case "message-delete":
@@ -231,19 +190,19 @@ func ReadIncomingMessagesFromRabbit() {
 		}
 	}()
 
-	body := "Hello World!"
-	err = ch.Publish(
-		"",       // exchange
-		"events", // routing key
-		false,    // mandatory
-		false,    // immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
-		})
-	if err != nil {
-		log.Fatalf("Failed to publish: %v", err)
-	}
+	// body := "Hello World!"
+	// err = ch.Publish(
+	// 	"",       // exchange
+	// 	"events", // routing key
+	// 	false,    // mandatory
+	// 	false,    // immediate
+	// 	amqp.Publishing{
+	// 		ContentType: "text/plain",
+	// 		Body:        []byte(body),
+	// 	})
+	// if err != nil {
+	// 	log.Fatalf("Failed to publish: %v", err)
+	// }
 }
 
 func contains(userID int64, userIDs []int64) bool {

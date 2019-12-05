@@ -18,57 +18,7 @@ import (
 
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gorilla/websocket"
 )
-
-// Control messages for websocket
-const (
-	// TextMessage denotes a text data message. The text message payload is
-	// interpreted as UTF-8 encoded text data.
-	TextMessage = 1
-
-	// BinaryMessage denotes a binary data message.
-	BinaryMessage = 2
-
-	// CloseMessage denotes a close control message. The optional message
-	// payload contains a numeric code and text. Use the FormatCloseMessage
-	// function to format a close message payload.
-	CloseMessage = 8
-
-	// PingMessage denotes a ping control message. The optional message payload
-	// is UTF-8 encoded text.
-	PingMessage = 9
-
-	// PongMessage denotes a pong control message. The optional message payload
-	// is UTF-8 encoded text.
-	PongMessage = 10
-)
-
-// Message represents a RabbitMQ message
-type Message struct {
-	Type          string
-	Channel       string `json:"channel"`
-	ChannelID     string `json:"channelID"`
-	UserMessage   string `json:"message"`
-	UserMessageID string `json:"messageID"`
-	UserIDs       []int64
-}
-
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
-		// This function's purpose is to reject websocket upgrade requests if the
-		// origin of the websockete handshake request is coming from unknown domains.
-		// This prevents some random domain from opening up a socket with your server.
-		// TODO: make sure you modify this for your HW to check if r.Origin is your host
-
-		return true
-	},
-}
-
-// Data structure containing every current websocket connection
-var socketStore *handlers.SocketStore = handlers.NewSocketStore()
 
 // main is the main entry point for the server
 func main() {
@@ -165,16 +115,12 @@ func CustomDirector(targets []*url.URL, sessionKey string, redisstore *sessions.
 	return func(r *http.Request) {
 		_, err := sessions.GetSessionID(r, sessionKey)
 		if err != nil {
-			//log.Printf("Error: Retrieving Session ID: %v", err)
 			r.Header["X-User"] = nil
 		} else {
-			//log.Println("No error getting sessionID")
 			sessionState := &handlers.SessionState{}
 			sessions.GetState(r, sessionKey, redisstore, sessionState)
 			user := sessionState.User
 			bytes, _ := json.Marshal(user)
-			//log.Println("User JSON:")
-			//log.Println(string(bytes))
 			r.Header.Add("X-User", string(bytes[:]))
 		}
 
@@ -193,13 +139,4 @@ func CustomDirector(targets []*url.URL, sessionKey string, redisstore *sessions.
 			r.URL.Scheme = "http"
 		}
 	}
-}
-
-func contains(userID int64, userIDs []int64) bool {
-	for _, ID := range userIDs {
-		if ID == userID {
-			return true
-		}
-	}
-	return false
 }
