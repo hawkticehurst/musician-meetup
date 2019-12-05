@@ -1,32 +1,25 @@
 (function () {
   "use strict";
 
-  // Remember to always run the main.go file on port 4000 (vs the default port 80)
-  // const BASE_URL = "http://localhost:4000/v1/summary";
-
   const BASE_URL = "https://api.info441summary.me/v1/events/join";
   const LOGOUT_URL = "https://api.info441summary.me/v1/sessions/mine";
   const CHANNEL_URL = "https://api.info441summary.me/v1/channels/";
-  let CURR_CHANNEL = undefined; // This is the currently opened channel id
+  let CURR_CHANNEL = undefined; // This is the currently opened chat channel id
 
   /**
    *  Functions that will be called once the window is loaded
-   *  Submit button will get click event listener and call fetchUrlSummary
    */
   window.addEventListener("load", () => {
     getEvents();
-    const logoutButton = id('logout-btn')
-    logoutButton.addEventListener('click', function (event) {
-      //event.preventDefault();
-      logUserOut();
-    });
+
+    const logoutBtn = id('logout-btn')
+    logoutBtn.addEventListener('click', logUserOut);
 
     const sendBtn = id("send-btn");
     sendBtn.addEventListener("click", sendMessage);
-
-    
   });
 
+  // Establish WebSocket connection
   let sock;
   document.addEventListener("DOMContentLoaded", (event) => {
     sock = new WebSocket("wss://api.info441summary.me/v1/ws?auth=" + getAuthToken());
@@ -37,57 +30,56 @@
       console.log("Connection Closed");
     };
     sock.onmessage = (msg) => {
-      //console.log("Message received " + msg.data);
-      //console.log("Type of msg.data: " + typeof(msg.data));
-      // let info2 = JSON.parse(msg.data);
-      // console.log("Parsed Info: " + JSON.stringify(info2))
-
-      let info = "";
+      let msgInfo = "";
       try {
-          info = JSON.parse(msg.data).message;
-      } catch(e) {
-          console.log(e);
+        msgInfo = JSON.parse(msg.data).message;
+      } catch (e) {
+        console.log(e);
       }
-      //console.log("Parsed Info: " + JSON.stringify(info))
 
-      if (info.channelID == CURR_CHANNEL) {
+      if (msgInfo.channelID == CURR_CHANNEL) {
 
         let messageBox = document.createElement('div');
         messageBox.className = 'container';
 
         let name = document.createElement('p');
-        name.innerText = info.creator.firstName + " " + info.creator.lastName;
+        name.innerText = msgInfo.creator.firstName + " " + msgInfo.creator.lastName;
 
         let message = document.createElement('p');
-        message.innerText = info.body;
+        message.innerText = msgInfo.body;
 
         messageBox.appendChild(name);
         messageBox.appendChild(message);
-        document.getElementById("channel").appendChild(messageBox);
-
+        id("channel").appendChild(messageBox);
       }
-      
-      //const newMsg = document.createElement("p");
-      //newMsg.textContent = msg.data;
-      //document.getElementById("channel").append(newMsg);
     };
   });
 
+  // logUserOut will make request to log out the current user and delete their auth cookie
   const logUserOut = () => {
     fetch(LOGOUT_URL, {
-      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+      method: 'DELETE',
       headers: {
         'Content-Type': 'text/html',
         'Authorization': getAuthToken()
       },
-      body: ""// body data type must match "Content-Type" header
+      body: ""
     }).then(checkStatus)
-      .then(window.location.pathname = '../').catch(displayErrorHomePage)
+      .then(window.location.pathname = '../')
+      .catch(displayErrorHomePage);
+
+    deleteCookie("auth");
   }
 
+  // deleteCookie given the name of a cookie, this function will delete that cookie
+  const deleteCookie = (name) => {
+    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  };
+
+  // getEvents fetches the data in order to display chat event cards
   const getEvents = () => {
     fetch(BASE_URL, {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      method: 'GET',
       headers: {
         'Authorization': getAuthToken()
       }
@@ -98,9 +90,9 @@
       .catch(displayErrorHomePage);
   }
 
+  // displayCards displays chat event cards
   const displayCards = (info) => {
-    for (var i = 0; i < info.length; i++) {
-      //console.log("event: " + JSON.stringify(info[i]));
+    for (let i = 0; i < info.length; i++) {
       let data = info[i];
       let card = document.createElement('div');
       card.className = 'card';
@@ -140,20 +132,17 @@
 
   const showTextBar = () => {
     let chatContainer = id("chat-input-container");
-
     chatContainer.classList.remove("d-none");
 
     let chatInput = id("chat-input");
-
     chatInput.classList.remove("d-none");
 
     let sendBtn = id("send-btn");
-
     sendBtn.classList.remove("d-none");
   }
 
   const resetChannelBgs = () => {
-    let cards = id("cards-container").querySelectorAll(".card"); 
+    let cards = id("cards-container").querySelectorAll(".card");
 
     for (let i = 0; i < cards.length; i++) {
       cards[i].className = 'card';
@@ -165,11 +154,9 @@
   }
 
   const getChannel = (channelID) => {
-    //console.log("getChannel() ran");
-    //get all messages
     const channelURL = CHANNEL_URL + channelID;
     fetch(channelURL, {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      method: 'GET',
       headers: {
         'Authorization': getAuthToken()
       }
@@ -190,9 +177,8 @@
       }
 
       const url = CHANNEL_URL + CURR_CHANNEL;
-      //console.log("sending message");
       fetch(url, {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': getAuthToken()
@@ -200,19 +186,12 @@
         body: JSON.stringify(messageJSON)
       })
         .then(checkStatus)
-        //.then(refreshChannel)
         .catch(displayErrorHomePage);
     }
   }
 
-  const refreshChannel = (response) => {
-    //console.log("Inside refresh channel function");
-    getChannel(CURR_CHANNEL);
-    return response;
-  }
-
   const displayMessages = (data) => {
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       let info = data[i];
       let messageBox = document.createElement('div');
       messageBox.className = 'container';
@@ -230,7 +209,6 @@
   }
 
   const displayErrorHomePage = (error) => {
-    // Retrieve container for displaying error
     const metaContainer = id('error-card');
     const cardsContainer = id("cards-container");
     if (metaContainer.classList.contains("hidden")) {
@@ -239,7 +217,6 @@
     }
     metaContainer.innerHTML = "";
 
-    // Render error
     const errorMsg = document.createElement('h3');
     errorMsg.classList.add("error-msg");
     errorMsg.textContent = "Sorry we are unable to retrieve events at this time.";
@@ -256,10 +233,6 @@
    */
   const id = (idName) => {
     return document.getElementById(idName);
-  }
-
-  const idValue = (idName) => {
-    return document.getElementById(idName).value;
   }
 
   const getAuthToken = () => {
