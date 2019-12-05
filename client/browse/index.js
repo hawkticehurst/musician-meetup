@@ -79,10 +79,12 @@
       let joinBtn = document.createElement("button");
       let isMember = await userIsMember(data.id);
       if (isMember) {
+        joinBtn.disabled = true;
         joinBtn.innerText = "You are a member of this event";
         joinBtn.setAttribute("type", "button");
         joinBtn.classList.add("btn");
-        joinBtn.classList.add("btn-secondary");
+        joinBtn.classList.add("btn-success");
+        joinBtn.classList.add("join-btn");
       } else {
         joinBtn.innerText = "Join Event";
         joinBtn.setAttribute("type", "button");
@@ -122,7 +124,7 @@
     }
   }
 
-  const joinEvent = (id) => {
+  function joinEvent(id) {
     const eventID = {
       id: id
     }
@@ -136,6 +138,10 @@
       body: JSON.stringify(eventID)
     }).then(checkStatus)
       .catch(displayErrorHomePage)
+
+    this.innerText = "You are a member of this event";
+    this.classList.remove("btn-primary");
+    this.classList.add("btn-success");
   }
 
   const getAuthToken = () => {
@@ -158,14 +164,12 @@
    * @param {Object} error - Error resulting from unsuccesful fetch call 
    */
   const displayErrorForm = (error) => {
-    // Retrieve container for displaying error
     const metaContainer = id('formError');
     if (metaContainer.classList.contains("hidden")) {
       metaContainer.classList.remove("hidden");
     }
     metaContainer.innerHTML = "";
 
-    // Render error
     const errorMsg = document.createElement('h2');
     errorMsg.classList.add("error-msg");
     errorMsg.textContent = error;
@@ -173,14 +177,12 @@
   }
 
   const displayErrorHomePage = (error) => {
-    // Retrieve container for displaying error
     const metaContainer = id('errorHome');
     if (metaContainer.classList.contains("hidden")) {
       metaContainer.classList.remove("hidden");
     }
     metaContainer.innerHTML = "";
 
-    // Render error
     const errorMsg = document.createElement('h2');
     errorMsg.classList.add("error-msg");
     errorMsg.textContent = error;
