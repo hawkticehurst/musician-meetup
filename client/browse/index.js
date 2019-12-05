@@ -8,7 +8,7 @@
   /**
    *  Functions that will be called once the window is loaded
    */
-  window.addEventListener("load", () => {
+  window.addEventListener("load", function () {
     getEvents();
 
     const logoutBtn = id('log-out')
@@ -60,7 +60,7 @@
       .catch(displayErrorForm)
   }
 
-  const getEvents = () => {
+  function getEvents() {
     fetch(BASE_URL, {
       method: 'GET',
       headers: {
@@ -73,7 +73,7 @@
       .catch(displayErrorHomePage)
   }
 
-  const displayCards = async (info) => {
+  async function displayCards(info) {
     for (var i = 0; i < info.length; i++) {
       let data = info[i];
       let joinBtn = document.createElement("button");
