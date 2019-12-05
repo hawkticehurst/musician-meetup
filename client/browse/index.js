@@ -139,9 +139,9 @@
     }).then(checkStatus)
       .catch(displayErrorHomePage)
 
-    this.innerText = "You are a member of this event";
-    this.classList.remove("btn-primary");
-    this.classList.add("btn-success");
+    // this.innerText = "You are a member of this event";
+    // this.classList.remove("btn-primary");
+    // this.classList.add("btn-success");
   }
 
   const getAuthToken = () => {

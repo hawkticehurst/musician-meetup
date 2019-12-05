@@ -1,9 +1,6 @@
 (function () {
   "use strict";
 
-  // Remember to always run the main.go file on port 4000 (vs the default port 80)
-  // const BASE_URL = "http://localhost:4000/v1/summary";
-
   const BASE_URL = "https://api.info441summary.me/v1/sessions";
 
   /**
@@ -25,12 +22,12 @@
       password: idValue('Password'),
     }
     fetch(BASE_URL, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': getAuthToken()
       },
-      body: JSON.stringify(user) // body data type must match "Content-Type" header
+      body: JSON.stringify(user)
     }).then(checkStatus)
       .then(handleLogIn)
       .then(redirect)

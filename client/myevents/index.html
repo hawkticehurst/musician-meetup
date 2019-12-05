@@ -9,65 +9,15 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.css">
   <link rel="stylesheet" href="index.css">
   <script src="index.js"></script>
-  <!-- <script>
-    let sock;
-    document.addEventListener("DOMContentLoaded", (event) => {
-      sock = new WebSocket("wss://api.info441summary.me/v1/ws?auth=" + getAuthToken());
-      sock.onopen = () => {
-        console.log("Connection Opened");
-      };
-      sock.onclose = () => {
-        console.log("Connection Closed");
-      };
-      sock.onmessage = (msg) => {
-        console.log("Message received " + msg.data);
-
-        // let info2 = JSON.parse(msg.data);
-        // console.log("Parsed Info: " + JSON.stringify(info2))
-
-        let info = JSON.parse(msg.data).message;
-        console.log("Parsed Info: " + JSON.stringify(info))
-        let messageBox = document.createElement('div');
-        messageBox.className = 'container';
-
-        let name = document.createElement('p');
-        name.innerText = info.creator.firstName + " " + info.creator.lastName;
-
-        let message = document.createElement('p');
-        message.innerText = info.body;
-
-        messageBox.appendChild(name);
-        messageBox.appendChild(message);
-        document.getElementById("channel").appendChild(messageBox);
-        
-        //const newMsg = document.createElement("p");
-        //newMsg.textContent = msg.data;
-        //document.getElementById("channel").append(newMsg);
-      };
-
-      function getAuthToken() {
-        let nameEQ = "auth=";
-        let cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-          let cookie = cookies[i];
-          while (cookie.charAt(0) == " ") {
-            cookie = cookie.substring(1, cookie.length);
-          }
-          if (cookie.indexOf(nameEQ) == 0) {
-            return cookie.substring(nameEQ.length, cookie.length);
-          }
-        }
-        return null;
-      }
-    });
-  </script> -->
 </head>
 
 <body>
   <header>
     <h3><a href="../browse/index.html">Browse</a></h3>
     <h3><a href="index.html">My Events</a></h3>
-    <button id="log-out" class="btn btn-link"><h3>Log Out</h3></button>
+    <button id="log-out" class="btn btn-link">
+      <h3>Log Out</h3>
+    </button>
   </header>
   <main>
     <div class="row">
