@@ -60,58 +60,45 @@ The service will maintain a connection to our **MySQL** database (over port 3306
 ## API Endpoints
 
 /v1/users
-/v1/users/
-/v1/sessions
-/v1/sessions/
-/v1/ws
-/v1/channels
-/v1/channels/
-/v1/messages/
-/v1/events
-/v1/events/
-
-/v1/meetups/
-* GET: Respond with a cardview of public meetups that users want to organize, only viewable if signed in
-- 200: Retrieve and return all meetups information
-- 401: No sessionID or user not logged in
-- 500: Server error
-
-/v1/meetups/{meetupID}
-* GET: Respond with a struct with info on the given meetup
-- 200: Retrieve and return all the meetup's information
-- 401: No sessionID or user not logged in
-- 500: Server error
-* DELETE: delete meetup event, only user who created meetup event can delete meetup event
-- 200: Retrieve and return all meetups information
-- 401: No sessionID or user not logged in
-- 500: Server error
-
-/v1/user/signin
-* POST: gets the sign in page
-- 200: Authenticate and log user in
-- 401: Cannot sign in given credentials
-- 500: Server error
-* DELETE: sign user out
-- 200: Successfully sign out user and let the user know with message
-- 401: Session error, potentially no one logged in or distorted session
-- 500: Server error
-
-/v1/user/signup
 * POST: post information to user database to create user account
-- 200: Retrieve new user information
+- 201: created new user
 - 401: Could not create user, or invalid session
+- 415: client did not post JSON
 - 500: Server error
 
-/v1/meetups/newmeetup
-* POST: post new meetup event to meetup database associated with user
-- 200: Post info to MySQL database, return meetup id
-- 401: Invalid session
+/v1/sessions
+* POST: post information to user database to create user account
+- 201: create a new log in session
+- 401: Could not log user in
 - 500: Server error
 
-/v1/user/chat/
-* GET: get chat page 
-- 200: Retrieve and return chat page
-- 401: No sessionID or user not logged in
+/v1/sessions/mine
+* DELETE: post information to user database to create user account
+- 200: deleted the user session
+- 401: Could not delete given session
+- 500: Server error
+
+/v1/ws
+* Create websockets connection
+
+/v1/events
+* GET: get all meetup events
+- 201: returns a list of all events
+- 401: Could not retreive events
+- 500: Server error
+* POST: post a newmeetup event
+- 201: create new meetup event
+- 401: could not create new meetup event
+- 500: Server error
+
+/v1/events/join
+* GET: get information about events that the logged in user has joined
+- 201: returns list of channels the user is a part of
+- 401: could not get list of channels the user has joined
+- 500: Server error
+* POST: joins the logged in user to the event
+- 201: joins the user to the given channel
+- 401: could not join the user to the channel
 - 500: Server error
 
 ## Database Schemas
