@@ -118,37 +118,57 @@ The service will maintain a connection to our **MySQL** database (over port 3306
 
 We will use MySQL as our persistent database.
 
-user: User represents a person who can log-in, message, and be a part of meetups on our site
+Users: User represents a person who can log-in, message, and be a part of meetups on our site
 ```
-{
-    'email': 'user_email',
-    'passwordhash': 'password_hash',
-    'username': 'username',
-    'datesignedup': 'date'
-
-}
-```
-
-credentials: Represents what a user will input to log in to their account
-```
-{
-    'email': 'user_email',
-    'password': 'password'
-
-}
+CREATE TABLE IF NOT EXISTS Users (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    PassHash VARCHAR(72) NOT NULL,
+    UserName VARCHAR(255) NOT NULL UNIQUE,
+    FirstName VARCHAR(128),
+    LastName VARCHAR(128),
+    PhotoURL VARCHAR(2083) NOT NULL,
+    PRIMARY KEY (ID)
+);
 ```
 
-meetup: Represents a proposed or completed meetup between multiple users at a certain location for a certain activity
+Events: Represents an event that multiple users can join
 ```
-{
-    'userlist': [
-        'user1'
-    ],
-    'location': 'address',
-    'creator': 'username',
-    'date': 'date',
-    'starttime': 'starttime',
-    'endtime': 'endtime'
-}
+CREATE TABLE IF NOT EXISTS Events (
+    ID INT NOT NULL AUTO_INCREMENT,
+    Title VARCHAR(255) NOT NULL,
+    EventDateTime VARCHAR(255) NOT NULL,
+    ChannelID INT NOT NULL,
+    LocationOfEvent VARCHAR(255) NOT NULL,
+    DescriptionOfEvent VARCHAR(255) NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (ChannelID) REFERENCES Channels(ID)
+);
 ```
 
+Channels: Represents a chat channel
+```
+CREATE TABLE IF NOT EXISTS Channels (
+    ID INT NOT NULL AUTO_INCREMENT,
+    ChannelName VARCHAR(255) NOT NULL,
+    ChannelDescription VARCHAR(255),
+    PrivateChannel BOOLEAN NOT NULL,
+    TimeCreated DATETIME NOT NULL,
+    Creator INT,
+    LastUpdated DATETIME,
+    PRIMARY KEY (ID)
+);
+```
+
+Messages: Represents a user created chat message
+```
+CREATE TABLE IF NOT EXISTS Messages (
+    ID INT NOT NULL AUTO_INCREMENT,
+    ChannelID INT NOT NULL,
+    Body VARCHAR(255) NOT NULL,
+    TimeCreated DATETIME NOT NULL,
+    Creator INT NOT NULL,
+    LastUpdated DATETIME,
+    PRIMARY KEY (ID)
+);
+```
