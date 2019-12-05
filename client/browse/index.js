@@ -11,7 +11,7 @@
   window.addEventListener("load", function () {
     getEvents();
 
-    const logoutBtn = id('log-out')
+    const logoutBtn = id('logout-btn')
     logoutBtn.addEventListener('click', logUserOut);
 
     const createEventBtn = id('submit');
