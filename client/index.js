@@ -4,57 +4,48 @@
   const BASE_URL = "https://api.info441summary.me/v1/sessions";
 
   /**
-   *  Functions that will be called once the window is loaded
-   *  Submit button will get click event listener and call fetchUrlSummary
+   * Functions that will be called once the window is loaded
    */
-
   window.addEventListener("load", () => {
-    const button = id('submit');
-    button.addEventListener('click', function (event) {
+    id('submit').addEventListener('click', function (event) {
       event.preventDefault();
-      authenticate();
+      authenticateUser();
     });
   });
 
-  const authenticate = () => {
+  /**
+   * authenticateUser makes a request to authenticate (i.e. log in) the current user
+   */
+  const authenticateUser = () => {
     const user = {
-      email: idValue('Email'),
-      password: idValue('Password'),
+      email: id('Email').value,
+      password: id('Password').value,
     }
+
     fetch(BASE_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': getAuthToken()
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(user)
     }).then(checkStatus)
-      .then(handleLogIn)
-      .then(redirect)
+      .then(setAuthCookie)
+      .then(redirectToBrowse)
       .catch(displayError)
   }
 
-  const handleLogIn = (response) => {
-    document.cookie = "auth=" + response.headers.get("authorization");
-  }
-
-  const redirect = () => {
-    window.location = "./browse/index.html";
-  }
-
   /**
-   * Function to handle the result of an unsuccessful fetch call
-   * @param {Object} error - Error resulting from unsuccesful fetch call 
+   * displayError handles the result of an unsuccessful fetch to authenticate 
+   * (i.e. log in) the current user
+   * @param {string} error an error message
    */
   const displayError = (error) => {
-    // Retrieve container for displaying error
     const metaContainer = id('meta-container');
     if (metaContainer.classList.contains("hidden")) {
       metaContainer.classList.remove("hidden");
     }
     metaContainer.innerHTML = "";
 
-    // Render error
     const errorMsg = document.createElement('h2');
     errorMsg.classList.add("error-msg");
     errorMsg.textContent = error;
@@ -73,10 +64,6 @@
     return document.getElementById(idName);
   }
 
-  const idValue = (idName) => {
-    return document.getElementById(idName).value;
-  }
-
   /**
    * Helper function to return the response's result text if successful, otherwise
    * returns the rejected Promise result with an error status and corresponding text
@@ -92,19 +79,20 @@
     }
   }
 
-  const getAuthToken = () => {
-    let nameEQ = "auth=";
-    let cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      let cookie = cookies[i];
-      while (cookie.charAt(0) == " ") {
-        cookie = cookie.substring(1, cookie.length);
-      }
-      if (cookie.indexOf(nameEQ) == 0) {
-        return cookie.substring(nameEQ.length, cookie.length);
-      }
-    }
-    return null;
+  /**
+   * setAuthCookie sets an authorization cookie for the current user
+   * @param {Response Object} response an HTTP response object
+   */
+  const setAuthCookie = (response) => {
+    document.cookie = "auth=" + response.headers.get("authorization");
+  }
+
+  /**
+   * redirectToBrowse will redirect to the browse page upon successfully completing
+   * the fetch request to authenticate (i.e. log in) the user
+   */
+  const redirectToBrowse = () => {
+    window.location = "./browse/index.html";
   }
 
 })();
