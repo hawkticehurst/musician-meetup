@@ -62,11 +62,6 @@ app.delete("/v1/channels/:channelid/members", param.contains, auth.isCreator, ch
 app.patch("/v1/messages/:messageid", param.contains, auth.isCreatorMsg, messages.updateMsg);
 app.delete("/v1/messages/:messageid", param.contains, auth.isCreatorMsg, messages.deleteMsg);
 
-app.get("/v1/events", events.getAllEvents);
-app.post("/v1/events", events.createNewEvent);
-app.post("/v1/events/join", events.joinEvent);
-app.get("/v1/events/join", events.getJoinedEvents);
-
 app.listen(port, host, function () {
   console.log(`Server is listening at ${addr}...`);
 });

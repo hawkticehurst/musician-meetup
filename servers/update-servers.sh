@@ -39,7 +39,7 @@ echo "✅  Environment Variables Set"
 docker network create -d bridge backendnetwork
 echo "✅  Docker Network Created"
 
-docker run -d --network backendnetwork --hostname my-rabbit --name rabbitmqserver rabbitmq:3-management
+docker run -d --network backendnetwork --name rabbitmqserver --hostname my-rabbit rabbitmq:3-management
 docker run -d --network backendnetwork --name messagingserver --restart unless-stopped -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e HOST=$HOST -e PORT=$PORT -e USER=$USER -e DATABASE=$DATABASE $DOCKERNAME/messagingserver
 docker run -d --network backendnetwork --name meetupserver --restart unless-stopped -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e HOST=$HOST -e PORT=$PORT -e USER=$USER -e DATABASE=$DATABASE $DOCKERNAME/meetupserver
 docker run -d --network backendnetwork --name mysqlserver -e MYSQL_USER=$USER -e MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD -e MYSQL_DATABASE=$DATABASE $DOCKERNAME/mysqldb

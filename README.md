@@ -62,45 +62,45 @@ The service will maintain a connection to our **MySQL** database (over port 3306
 ## API Endpoints
 
 ```/v1/users```
-- ```POST```: post information to user database to create user account
-    - ```201```: created new user
+- ```POST```: Post information to user database to create user account
+    - ```201```: Create new user
     - ```401```: Could not create user, or invalid session
-    - ```415```: client did not post JSON
+    - ```415```: Client did not post JSON
     - ```500```: Server error
 
 ```/v1/sessions```
-- ```POST```: post information to user database to create user account
-    - ```201```: create a new log in session
+- ```POST```: Post information to user database to create user account
+    - ```201```: Create a new log in session
     - ```401```: Could not log user in
     - ```500```: Server error
 
 ```/v1/sessions/mine```
-- ```DELETE```: post information to user database to create user account
-    - ```200```: deleted the user session
+- ```DELETE```: Post information to user database to create user account
+    - ```200```: Deleted the user session
     - ```401```: Could not delete given session
     - ```500```: Server error
 
 ```/v1/ws```
-- Create websockets connection
+- Create a new websocket connection
 
 ```/v1/events```
-- ```GET```: get all meetup events
-    - ```201```: returns a list of all events
+- ```GET```: Get all meetup events
+    - ```201```: Returns a list of all events
     - ```401```: Could not retreive events
     - ```500```: Server error
-- ```POST```: post a newmeetup event
-    - ```201```: create new meetup event
-    - ```401```: could not create new meetup event
+- ```POST```: Post a newmeetup event
+    - ```201```: Create new meetup event
+    - ```401```: Could not create new meetup event
     - ```500```: Server error
 
 ```/v1/events/join```
-- ```GET```: get information about events that the logged in user has joined
-    - ```201```: returns list of channels the user is a part of
-    - ```401```: could not get list of channels the user has joined
+- ```GET```: Get information about events that the logged in user has joined
+    - ```201```: Returns list of channels the user is a part of
+    - ```401```: Could not get list of channels the user has joined
     - ```500```: Server error
-- ```POST```: joins the logged in user to the event
-    - ```201```: joins the user to the given channel
-    - ```401```: could not join the user to the channel
+- ```POST```: Joins the logged in user to the event
+    - ```201```: Joins the user to the given channel
+    - ```401```: Could not join the user to the channel
     - ```500```: Server error
 
 ## Database Schemas
