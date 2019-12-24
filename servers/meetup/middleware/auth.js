@@ -73,7 +73,7 @@ async function isCreator(req, res, next) {
     res.set("Content-Type", "text/plain");
     res.status(500).send("Server Error: Cannot get specified channel from database.");
     return;
-  } 
+  }
   const channel = result.channel;
 
   if (user.id !== channel.creator) {
@@ -126,7 +126,7 @@ async function isCreatorMsg(req, res, next) {
     db.end();
     return;
   }
-  // Note: We do not want to end the connection at this point because the handler function
+  // Note: We do not want to end the DB connection at this point because the handler function
   // called after this middleware will be using the same connection.
   next();
 }
