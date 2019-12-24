@@ -11,7 +11,6 @@ const amqp = require('amqplib/callback_api');
  * @param {Request} req HTTP request object 
  * @param {Response} res HTTP response object
  */
-
 async function getAllChannels(req, res) {
   const db = req.db;
   const user = JSON.parse(req.get("X-User"));
@@ -71,7 +70,6 @@ async function getAllChannels(req, res) {
     return;
   }
   db.end();
-
   res.status(200).json(userChannels);
 }
 
@@ -141,14 +139,17 @@ async function createNewChannel(req, res) {
 
   const memberIDs = await rabbitmqhelpers.getMemberIDs(channelID, db);
 
-  const newChannelObject = {
+  const rabbitNewChannel = {
     "type": "channel-new",
     "channel": newChannelWithID,
     "userIDs": memberIDs.members
   }
 
-  //req.amqpChannel.sendToQueue("events", JSON.stringify(newChannelObject), { persistent: true });
-  console.log(" [x] Sent %s", JSON.stringify(newChannelObject));
+  const error = sendMessageToRabbitMQ(rabbitNewChannel);
+  if (error != null) {
+    console.log("Error sending event message to RabbitMQ: " + error);
+    res.status(500).send("Error sending event message to RabbitMQ");
+  }
 
   res.status(201).json(newChannelWithID);
 }
@@ -278,10 +279,9 @@ async function sendMessage(req, res) {
 
   const error = sendMessageToRabbitMQ(rabbitNewMessage);
   if (error != null) {
-    console.log("Error sending message to RabbitMQ: " + error);
+    console.log("Error sending event message to RabbitMQ: " + error);
     res.status(500).send("Error sending event message to RabbitMQ");
   }
-  //req.amqpChannel.sendToQueue("events", JSON.stringify(sendMessageObject), { persistent: true });
 
   res.status(201).json(newMsg);
 }
@@ -358,14 +358,17 @@ async function updateChannel(req, res) {
 
   const memberIDs = await rabbitmqhelpers.getMemberIDs(channel.id, db);
 
-  const patchChannelObject = {
+  const rabbitUpdateChannel = {
     "type": "channel-update",
     "channel": channel,
     "userIDs": memberIDs.members
   }
 
-  //req.amqpChannel.sendToQueue("events", JSON.stringify(patchChannelObject), { persistent: true });
-  console.log(" [x] Sent %s", JSON.stringify(patchChannelObject));
+  const error = sendMessageToRabbitMQ(rabbitUpdateChannel);
+  if (error != null) {
+    console.log("Error sending event message to RabbitMQ: " + error);
+    res.status(500).send("Error sending event message to RabbitMQ");
+  }
 
   db.end();
   res.status(200).json(channel);
@@ -407,14 +410,17 @@ async function deleteChannel(req, res) {
 
   const memberIDs = await rabbitmqhelpers.getMemberIDs(channel.id, db);
 
-  const deleteChannelObject = {
+  const rabbitDeleteChannel = {
     "type": "channel-delete",
     "channelID": channel.id,
     "userIDs": memberIDs.members
   }
 
-  //req.amqpChannel.sendToQueue("events", JSON.stringify(deleteChannelObject), { persistent: true });
-  console.log(" [x] Sent %s", JSON.stringify(deleteChannelObject));
+  const error = sendMessageToRabbitMQ(rabbitDeleteChannel);
+  if (error != null) {
+    console.log("Error sending event message to RabbitMQ: " + error);
+    res.status(500).send("Error sending event message to RabbitMQ");
+  }
 
   db.end();
   res.status(200).type("text").send(`The ${channel.name} channel was successfully deleted.`);

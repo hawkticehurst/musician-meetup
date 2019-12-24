@@ -8,7 +8,6 @@ const events = require("./handlers/events");
 const auth = require("./middleware/auth");
 const param = require("./middleware/param");
 const db = require("./middleware/db");
-const rabbitmq = require("./middleware/rabbitmq");
 const amqp = require('amqplib/callback_api');
 
 const app = express();
@@ -31,7 +30,7 @@ app.use(multer().none());
 // along in the request object
 app.use(db.getDB);
 
-// app.use(rabbitmq.getRabbitMQConnection);
+// Establish a connection with RabbitMQ
 amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function (error0, connection) {
   if (error0) {
     throw error0;
@@ -45,12 +44,6 @@ amqp.connect('amqp://guest:guest@rabbitmqserver:5672/', function (error0, connec
     channel.assertQueue(queue, {
       durable: true
     });
-
-    // channel.consume(queue, function(msg) {
-    //   console.log(" [AMQP] Received %s", msg.content.toString());
-    // }, {
-    //     noAck: true
-    //   });
   });
 });
 
