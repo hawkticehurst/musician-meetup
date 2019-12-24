@@ -12,8 +12,8 @@ import (
 	"time"
 )
 
-//Set request content type header to wrong type and look for
-//status code http.StatusUnsupportedMediaType to be returned
+// Set request content type header to wrong type and look for status code
+// http.StatusUnsupportedMediaType to be returned
 func TestWrongContentTypeUsersHandler(t *testing.T) {
 	req, err := http.NewRequest("POST", "/v1/users", nil)
 	req.Header.Set("Content-Type", "text/plain")
@@ -31,8 +31,7 @@ func TestWrongContentTypeUsersHandler(t *testing.T) {
 	}
 }
 
-//Set body to non json content and a bad request
-//status should be returned
+// Set body to non json content and a bad request status should be returned
 func TestNonJSONFormatUsersHandler(t *testing.T) {
 	r := bytes.NewReader([]byte("hello"))
 	req, err := http.NewRequest("POST", "/v1/users", r)
@@ -51,8 +50,7 @@ func TestNonJSONFormatUsersHandler(t *testing.T) {
 	}
 }
 
-//Set json body with an invalid user and
-//validation error should be returned
+// Set json body with an invalid user and validation error should be returned
 func TestInvalidUserUsersHandler(t *testing.T) {
 	newUser := &users.NewUser{Email: "s", Password: "12", PasswordConf: "123", UserName: "s", FirstName: "Stanley", LastName: "Wu"}
 	buffer, err := json.Marshal(newUser)
@@ -73,9 +71,9 @@ func TestInvalidUserUsersHandler(t *testing.T) {
 	}
 }
 
-//If json body has a valid new user, check that
-//user is inserted into the database, a new session was created,
-//application/json is set, and a status 201 is returned
+// If json body has a valid new user, check that user is inserted into the
+// database, a new session was created, application/json is set, and a status
+// 201 is returned
 func TestValidNewUserUsersHandler(t *testing.T) {
 	newUser := &users.NewUser{Email: "stanley@gmail.com", Password: "123456", PasswordConf: "123456", UserName: "swu", FirstName: "Stanley", LastName: "Wu"}
 	buffer, err := json.Marshal(newUser)
@@ -120,8 +118,7 @@ func TestValidNewUserUsersHandler(t *testing.T) {
 	}
 }
 
-//If HTTP method besides POST is used,
-//a statusmethodnotallowed error should occur
+// If HTTP method besides POST is used, a statusmethodnotallowed error should occur
 func TestWrongHTTPMethodUsersHandler(t *testing.T) {
 	req, err := http.NewRequest("GET", "/v1/users", nil)
 	if err != nil {
@@ -138,11 +135,10 @@ func TestWrongHTTPMethodUsersHandler(t *testing.T) {
 	}
 }
 
-//Test that user cannot access this handler
-//if not logged in
+// Test that user cannot access this handler if not logged in
 func TestNotAuthenticatedSpecificUserHandler(t *testing.T) {
-	//There is no session header passed in to simulate
-	//user not signed in
+	// There is no session header passed in to simulate
+	// user not signed in
 	req, err := http.NewRequest("GET", "/v1/users/me", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -158,8 +154,7 @@ func TestNotAuthenticatedSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//If no user is found with given id,
-//a statusnotfound code should be returned
+// If no user is found with given id, a StatusNotFound code should be returned
 func TestBadIDSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
 	rr, context := CreateNewUser(Context)
@@ -168,8 +163,8 @@ func TestBadIDSpecificUserHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//Get the response authorization header and put into request header
-	//to simulate user being signed in
+	// Get the response authorization header and put into request header
+	// to simulate user being signed in
 	req.Header.Set("Authorization", rr.Header().Get("Authorization"))
 	rrTwo := httptest.NewRecorder()
 	handler := http.HandlerFunc(context.SpecificUserHandler)
@@ -181,7 +176,7 @@ func TestBadIDSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//If user id is correct (using 1), a user struct should be returned
+// If user id is correct (using 1), a user struct should be returned
 func TestValidUserIDNumberSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
 	rr, context := CreateNewUser(Context)
@@ -190,8 +185,8 @@ func TestValidUserIDNumberSpecificUserHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//Get the response authorization header and put into request header
-	//to simulate user being signed in
+	// Get the response authorization header and put into request header
+	// to simulate user being signed in
 	req.Header.Set("Authorization", rr.Header().Get("Authorization"))
 	rrTwo := httptest.NewRecorder()
 	handler := http.HandlerFunc(context.SpecificUserHandler)
@@ -221,7 +216,7 @@ func TestValidUserIDNumberSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//If user id is correct (using "me"), a user struct should be returned
+// If user id is correct (using "me"), a user struct should be returned
 func TestValidUserIDMeSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
 	rr, context := CreateNewUser(Context)
@@ -230,8 +225,8 @@ func TestValidUserIDMeSpecificUserHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//Get the response authorization header and put into request header
-	//to simulate user being signed in
+	// Get the response authorization header and put into request header
+	// to simulate user being signed in
 	req.Header.Set("Authorization", rr.Header().Get("Authorization"))
 	rrTwo := httptest.NewRecorder()
 	handler := http.HandlerFunc(context.SpecificUserHandler)
@@ -261,19 +256,19 @@ func TestValidUserIDMeSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//Test if the user ID in the request URL is not "me" or does not
-//match the currently-authenticated user, respond with StatusForbidden (403)
+// Test if the user ID in the request URL is not "me" or does not match
+// the currently-authenticated user, respond with StatusForbidden (403)
 func TestUnauthenticatedUserIDSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
 	rr, context := CreateNewUser(Context)
 
-	//Authenticated userID is 1, test with UserID 2
+	// Authenticated userID is 1, test with UserID 2
 	req, err := http.NewRequest("PATCH", "/v1/users/2", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	//Get the response authorization header and put into request header
-	//to simulate user being signed in
+	// Get the response authorization header and put into request header
+	// to simulate user being signed in
 	req.Header.Set("Authorization", rr.Header().Get("Authorization"))
 	rrTwo := httptest.NewRecorder()
 	handler := http.HandlerFunc(context.SpecificUserHandler)
@@ -285,8 +280,7 @@ func TestUnauthenticatedUserIDSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//Test if header does not start with application/json,
-//return http.StatusUnsupportedMediaType (415)
+// Test if header does not start with application/json, return http.StatusUnsupportedMediaType (415)
 func TestWrongContentTypeSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
 	rr, context := CreateNewUser(Context)
@@ -296,8 +290,8 @@ func TestWrongContentTypeSpecificUserHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//Get the response authorization header and put into request header
-	//to simulate user being signed in
+	// Get the response authorization header and put into request header
+	// to simulate user being signed in
 	req.Header.Set("Authorization", rr.Header().Get("Authorization"))
 	rrTwo := httptest.NewRecorder()
 	handler := http.HandlerFunc(context.SpecificUserHandler)
@@ -309,8 +303,8 @@ func TestWrongContentTypeSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//Test that status 200 is returned if input is an updates
-//struct that can update user's profile
+// Test that status 200 is returned if input is an updates
+// struct that can update user's profile
 func TestUpdateSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
 	rr, context := CreateNewUser(Context)
@@ -323,8 +317,8 @@ func TestUpdateSpecificUserHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//Get the response authorization header and put into request header
-	//to simulate user being signed in
+	// Get the response authorization header and put into request header
+	// to simulate user being signed in
 	req.Header.Set("Authorization", rr.Header().Get("Authorization"))
 	rrTwo := httptest.NewRecorder()
 	handler := http.HandlerFunc(context.SpecificUserHandler)
@@ -339,8 +333,7 @@ func TestUpdateSpecificUserHandler(t *testing.T) {
 		t.Errorf("handler returned wrong content type: got %v want %v",
 			content, "application/json")
 	}
-	// Check response body is correctly updated
-	// with update values
+	// Check response body is correctly updated with update values
 	updateUser := &users.Updates{}
 	buff := []byte(rrTwo.Body.String())
 	if err := json.Unmarshal(buff, updateUser); err != nil {
@@ -352,8 +345,7 @@ func TestUpdateSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//If HTTP method besides GET and PATCH is used,
-//a statusmethodnotallowed error should occur
+// If HTTP method besides GET and PATCH is used, a StatusMethodNotAllowed error should occur
 func TestWrongHTTPMethodSpecificUserHandler(t *testing.T) {
 	Context := NewContext("key", sessions.NewMemStore(3*time.Minute, 3*time.Minute), users.NewTestUserStore("client"))
 	rr, context := CreateNewUser(Context)
@@ -362,8 +354,8 @@ func TestWrongHTTPMethodSpecificUserHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	//Get the response authorization header and put into request header
-	//to simulate user being signed in
+	// Get the response authorization header and put into request header
+	// to simulate user being signed in
 	req.Header.Set("Authorization", rr.Header().Get("Authorization"))
 	rrTwo := httptest.NewRecorder()
 	handler := http.HandlerFunc(context.SpecificUserHandler)
@@ -375,7 +367,7 @@ func TestWrongHTTPMethodSpecificUserHandler(t *testing.T) {
 	}
 }
 
-//Create new user to simulate being signed in
+// Create new user to simulate being signed in
 func CreateNewUser(context *Context) (http.ResponseWriter, *Context) {
 	newUser := &users.NewUser{Email: "stanley@gmail.com", Password: "123456", PasswordConf: "123456", UserName: "swu", FirstName: "Stanley", LastName: "Wu"}
 	buffer, _ := json.Marshal(newUser)
@@ -389,7 +381,6 @@ func CreateNewUser(context *Context) (http.ResponseWriter, *Context) {
 }
 
 func TestSessionsHandlerMethodType(t *testing.T) {
-
 	// Test if we pass in a GET instead of a POST method
 	rr := httptest.NewRecorder()
 
@@ -430,7 +421,6 @@ func TestSessionsHandlerContentType(t *testing.T) {
 }
 
 func TestSessionsHandlerCorrectInput(t *testing.T) {
-
 	rr := httptest.NewRecorder()
 
 	userCredentials := &users.Credentials{Email: "stanley@gmail.com", Password: "123456"}
@@ -475,7 +465,6 @@ func TestSessionsHandlerCorrectInput(t *testing.T) {
 }
 
 func TestSessionsHandlerBadCredentialsStruct(t *testing.T) {
-
 	rr := httptest.NewRecorder()
 
 	// Not a json struct
@@ -500,7 +489,6 @@ func TestSessionsHandlerBadCredentialsStruct(t *testing.T) {
 }
 
 func TestSessionsHandlerBadCredentials(t *testing.T) {
-
 	rr := httptest.NewRecorder()
 
 	// Non-existing user
@@ -526,7 +514,6 @@ func TestSessionsHandlerBadCredentials(t *testing.T) {
 }
 
 func TestSessionsHandlerBadPassword(t *testing.T) {
-
 	rr := httptest.NewRecorder()
 
 	// Incorrect Password
@@ -552,7 +539,6 @@ func TestSessionsHandlerBadPassword(t *testing.T) {
 }
 
 func TestSessionsHandlerIPAddress(t *testing.T) {
-
 	rr := httptest.NewRecorder()
 
 	// Incorrect Password
