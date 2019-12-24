@@ -4,26 +4,28 @@
   const BASE_URL = "https://api.info441summary.me/v1/users";
 
   /**
-   *  Functions that will be called once the window is loaded
-   *  Submit button will get click event listener and call fetchUrlSummary
+   * Functions that will be called once the window is loaded
    */
   window.addEventListener("load", () => {
-    const button = id('submit');
-    button.addEventListener('click', function (event) {
+    id('submit').addEventListener('click', function (event) {
       event.preventDefault();
       createUser();
     });
   });
 
+  /**
+   * createUser makes a request to create a new user
+   */
   const createUser = () => {
     const newUser = {
-      firstName: idValue('FirstName'),
-      lastName: idValue('LastName'),
-      email: idValue('Email'),
-      userName: idValue('UserName'),
-      password: idValue('Password'),
-      passwordConf: idValue('PasswordConf')
+      firstName: id('FirstName').value,
+      lastName: id('LastName').value,
+      email: id('Email').value,
+      userName: id('UserName').value,
+      password: id('Password').value,
+      passwordConf: id('PasswordConf').value
     }
+
     fetch(BASE_URL, {
       method: 'POST',
       headers: {
@@ -32,27 +34,21 @@
       },
       body: JSON.stringify(newUser)
     }).then(checkStatus)
-      .then(redirect)
+      .then(redirectToLogIn)
       .catch(displayError)
   }
 
-  const redirect = () => {
-    window.location = "../index.html";
-  }
-
   /**
-   * Function to handle the result of an unsuccessful fetch call
-   * @param {Object} error - Error resulting from unsuccesful fetch call 
+   * displayError handles the result of an unsuccessful fetch create a new user
+   * @param {string} error an error message
    */
   const displayError = (error) => {
-    // Retrieve container for displaying error
     const metaContainer = id('meta-container');
     if (metaContainer.classList.contains("hidden")) {
       metaContainer.classList.remove("hidden");
     }
     metaContainer.innerHTML = "";
 
-    // Render error
     const errorMsg = document.createElement('h2');
     errorMsg.classList.add("error-msg");
     errorMsg.textContent = error;
@@ -70,10 +66,6 @@
     return document.getElementById(idName);
   }
 
-  const idValue = (idName) => {
-    return document.getElementById(idName).value;
-  }
-
   /**
    * Helper function to return the response's result text if successful, otherwise
    * returns the rejected Promise result with an error status and corresponding text
@@ -89,11 +81,25 @@
     }
   }
 
+  /**
+   * redirectToLogIn will redirect to the log in page upon successfully completing 
+   * the fetch request to create a new user
+   */
+  const redirectToLogIn = () => {
+    window.location = "../index.html";
+  }
+
+  /**
+   * getAuthToken returns the authentication token of the given user or null if the token 
+   * does not exist
+   * @return {string, null} authentication token of the given user or null if the token 
+   * does not exist
+   */
   const getAuthToken = () => {
-    let nameEQ = "auth=";
-    let cookies = document.cookie.split(";");
+    const nameEQ = "auth=";
+    const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
-      let cookie = cookies[i];
+      const cookie = cookies[i];
       while (cookie.charAt(0) == " ") {
         cookie = cookie.substring(1, cookie.length);
       }
