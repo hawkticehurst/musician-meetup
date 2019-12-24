@@ -6,19 +6,21 @@
   const JOINEVENT_URL = "https://api.info441summary.me/v1/events/join";
 
   /**
-   *  Functions that will be called once the window is loaded
+   * Functions that will be called once the window is loaded
    */
   window.addEventListener("load", function () {
-    getEvents();
-
     const logoutBtn = id('logout-btn')
     logoutBtn.addEventListener('click', logUserOut);
 
     const createEventBtn = id('submit');
     createEventBtn.addEventListener('click', createEvent);
+
+    getEvents();
   });
 
-  // logUserOut will make request to log out the current user and delete their auth cookie
+  /**
+   * logUserOut will make request to log out the current user and delete their auth cookie
+   */
   const logUserOut = () => {
     fetch(LOGOUT_URL, {
       method: 'DELETE',
@@ -34,18 +36,15 @@
     deleteCookie("auth");
   }
 
-  // deleteCookie given the name of a cookie, this function will delete that cookie
-  const deleteCookie = (name) => {
-    document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-  };
-
-  // createEvent makes a request to create a new event
+  /**
+   * createEvent makes a request to create a new meetup event
+   */
   const createEvent = () => {
     const newEvent = {
-      title: idValue('Title'),
-      datetime: idValue('DateTime'),
-      location: idValue('Location'),
-      description: idValue('Description'),
+      title: id('Title').value,
+      datetime: id('DateTime').value,
+      location: id('Location').value,
+      description: id('Description').value,
     }
 
     fetch(BASE_URL, {
@@ -60,6 +59,9 @@
       .catch(displayErrorForm)
   }
 
+  /**
+   * getEvents makes a request to retrieve all meetup events
+   */
   function getEvents() {
     fetch(BASE_URL, {
       method: 'GET',
@@ -73,11 +75,15 @@
       .catch(displayErrorHomePage)
   }
 
-  async function displayCards(info) {
-    for (var i = 0; i < info.length; i++) {
-      let data = info[i];
-      let joinBtn = document.createElement("button");
-      let isMember = await userIsMember(data.id);
+  /**
+   * displayCards renders all meetup events in the given JSON object on the browse webpage
+   * @param {JSON object} events a list of meetup events
+   */
+  async function displayCards(events) {
+    for (let i = 0; i < events.length; i++) {
+      const event = events[i];
+      const joinBtn = document.createElement("button");
+      const isMember = await userIsMember(event.id);
       if (isMember) {
         joinBtn.disabled = true;
         joinBtn.innerText = "You are a member of this event";
@@ -93,26 +99,26 @@
         joinBtn.classList.add("join-btn");
         joinBtn.addEventListener("click", function () {
           joinBtn.disabled = true;
-          joinEvent(data.id);
+          joinEvent(event.id);
         });
       }
-      let card = document.createElement('div');
+      const card = document.createElement('div');
       card.className = 'card';
 
-      let title = document.createElement('h4');
-      title.innerText = data.title;
+      const title = document.createElement('h4');
+      title.innerText = event.title;
       title.className = 'card-title';
 
-      let datetime = document.createElement('p');
-      datetime.innerText = data.datetime;
+      const datetime = document.createElement('p');
+      datetime.innerText = event.datetime;
       datetime.className = 'card-text';
 
-      let location = document.createElement('p');
-      location.innerText = data.location;
+      const location = document.createElement('p');
+      location.innerText = event.location;
       location.className = 'card-text';
 
-      let description = document.createElement('p');
-      description.innerText = data.description;
+      const description = document.createElement('p');
+      description.innerText = event.description;
       description.className = 'card-text';
 
       card.appendChild(title);
@@ -124,6 +130,10 @@
     }
   }
 
+  /**
+   * joinEvent makes a request to add the current user to the given meetup event
+   * @param {string} id an id associated with a specific meetup event
+   */
   function joinEvent(id) {
     const eventID = {
       id: id
@@ -138,30 +148,12 @@
       body: JSON.stringify(eventID)
     }).then(checkStatus)
       .catch(displayErrorHomePage)
-
-    // this.innerText = "You are a member of this event";
-    // this.classList.remove("btn-primary");
-    // this.classList.add("btn-success");
-  }
-
-  const getAuthToken = () => {
-    let nameEQ = "auth=";
-    let cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      let cookie = cookies[i];
-      while (cookie.charAt(0) == " ") {
-        cookie = cookie.substring(1, cookie.length);
-      }
-      if (cookie.indexOf(nameEQ) == 0) {
-        return cookie.substring(nameEQ.length, cookie.length);
-      }
-    }
-    return null;
   }
 
   /**
-   * Function to handle the result of an unsuccessful fetch call
-   * @param {Object} error - Error resulting from unsuccesful fetch call 
+   * displayErrorForm handles the result of an unsuccessful fetch call to 
+   * create a new meetup event
+   * @param {string} error an error message
    */
   const displayErrorForm = (error) => {
     const metaContainer = id('formError');
@@ -176,6 +168,11 @@
     metaContainer.appendChild(errorMsg);
   }
 
+  /**
+   * displayErrorHomePage handles the result of an unsuccessful fetch call to 
+   * log out the user, get all meetup events, or join a meetup event
+   * @param {string} error an error message
+   */
   const displayErrorHomePage = (error) => {
     const metaContainer = id('errorHome');
     if (metaContainer.classList.contains("hidden")) {
@@ -201,10 +198,6 @@
     return document.getElementById(idName);
   }
 
-  const idValue = (idName) => {
-    return document.getElementById(idName).value;
-  }
-
   /**
    * Helper function to return the response's result text if successful, otherwise
    * returns the rejected Promise result with an error status and corresponding text
@@ -220,10 +213,44 @@
     }
   }
 
-  //Check if user is part of event
+  /**
+   * deleteCookie deletes a given cookie
+   * @param {string} cookie a cookie
+   */
+  const deleteCookie = (cookie) => {
+    document.cookie = cookie + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  };
+
+  /**
+   * getAuthToken returns the authentication token of the given user or null if the token 
+   * does not exist
+   * @return {string, null} authentication token of the given user or null if the token 
+   * does not exist
+   */
+  const getAuthToken = () => {
+    const nameEQ = "auth=";
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i];
+      while (cookie.charAt(0) == " ") {
+        cookie = cookie.substring(1, cookie.length);
+      }
+      if (cookie.indexOf(nameEQ) == 0) {
+        return cookie.substring(nameEQ.length, cookie.length);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * userIsMember checks if the current user is part of a given meetup event
+   * @param {string} eventID an id associated with a specific meetup event
+   * @returns {boolean} a boolean representing whether the user is a member of 
+   * the given meetup event or not
+   */
   const userIsMember = async (eventID) => {
     const response = await fetch(JOINEVENT_URL, {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      method: 'GET',
       headers: {
         'Authorization': getAuthToken()
       }
