@@ -40,15 +40,7 @@ func NewSessionID(signingKey string) (SessionID, error) {
 		return InvalidSessionID, ErrInvalidID
 	}
 
-	//TODO: Generate a new digitally-signed SessionID by doing the following:
-	//- create a byte slice where the first `idLength` of bytes
-	//  are cryptographically random bytes for the new session ID,
-	//  and the remaining bytes are an HMAC hash of those ID bytes,
-	//  using the provided `signingKey` as the HMAC key.
-	//- encode that byte slice using base64 URL Encoding and return
-	//  the result as a SessionID type
-
-	//Create byte slice using the first 32 bytes as the cryptographically random bytes
+	// Create byte slice using the first 32 bytes as the cryptographically random bytes
 	sID := make([]byte, idLength)
 	_, err := rand.Read(sID)
 	if err != nil {
@@ -73,15 +65,7 @@ func NewSessionID(signingKey string) (SessionID, error) {
 // using the `signingKey` as the HMAC signing key
 // and returns an error if invalid, or a SessionID if valid
 func ValidateID(id string, signingKey string) (SessionID, error) {
-
-	//TODO: validate the `id` parameter using the provided `signingKey`.
-	//base64 decode the `id` parameter, HMAC hash the
-	//ID portion of the byte slice, and compare that to the
-	//HMAC hash stored in the remaining bytes. If they match,
-	//return the entire `id` parameter as a SessionID type.
-	//If not, return InvalidSessionID and ErrInvalidID.
-
-	//Decode back into binary when token is received
+	// Decode back into binary when token is received
 	decodedSigningKey, err := base64.URLEncoding.DecodeString(id)
 	if err != nil {
 		return InvalidSessionID, err

@@ -32,11 +32,11 @@ func TestNewID(t *testing.T) {
 			t.Errorf("case %s: unexpected error generating new SessionID: %v\nHINT: %s", c.name, err, c.hint)
 		}
 		if err == nil {
-			//ensure sid is non-zero-length
+			// ensure sid is non-zero-length
 			if len(sid) == 0 {
 				t.Errorf("case %s: new SessionID is zero-length\nHINT: %s", c.name, c.hint)
 			}
-			//ensure sid is base64-url-encoded
+			// ensure sid is base64-url-encoded
 			_, err := base64.URLEncoding.DecodeString(string(sid))
 			if err != nil {
 				t.Errorf("case %s: new SessionID failed base64-url-decoding: %v\nHINT: %s", c.name, err, c.hint)

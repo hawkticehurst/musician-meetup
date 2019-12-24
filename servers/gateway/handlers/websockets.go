@@ -189,20 +189,6 @@ func ReadIncomingMessagesFromRabbit() {
 			}
 		}
 	}()
-
-	// body := "Hello World!"
-	// err = ch.Publish(
-	// 	"",       // exchange
-	// 	"events", // routing key
-	// 	false,    // mandatory
-	// 	false,    // immediate
-	// 	amqp.Publishing{
-	// 		ContentType: "text/plain",
-	// 		Body:        []byte(body),
-	// 	})
-	// if err != nil {
-	// 	log.Fatalf("Failed to publish: %v", err)
-	// }
 }
 
 func contains(userID int64, userIDs []int64) bool {

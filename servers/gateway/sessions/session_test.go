@@ -48,7 +48,7 @@ func TestSessionGetSessionID(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		//test using Authorization header
+		// test using Authorization header
 		req, _ := http.NewRequest("GET", "/", nil)
 		req.Header.Add(headerAuthorization, c.header)
 		sidRet, err := GetSessionID(req, key)
@@ -91,8 +91,8 @@ func TestSessionCycle(t *testing.T) {
 	store := NewMemStore(time.Hour, time.Minute)
 	key := "test key"
 
-	//first try getting the session state before a session
-	//has been started to ensure you get an error
+	// first try getting the session state before a session
+	// has been started to ensure you get an error
 	var state int
 	req, _ := http.NewRequest("GET", "/", nil)
 	_, err := GetState(req, key, store, &state)
@@ -100,18 +100,18 @@ func TestSessionCycle(t *testing.T) {
 		t.Error("no error returned when getting state before session has started")
 	}
 
-	//begin a new session
+	// begin a new session
 	state = 100
 	respRec := httptest.NewRecorder()
 
-	//try beginning a session with an empty session signing key
-	//and ensure it fails
+	// try beginning a session with an empty session signing key
+	// and ensure it fails
 	_, err = BeginSession("", store, state, respRec)
 	if err == nil {
 		t.Error("expected error when beginning a new session with an empty signing key")
 	}
 
-	//then try with a valid signing key and make sure it works
+	// then try with a valid signing key and make sure it works
 	sid, err := BeginSession(key, store, state, respRec)
 	if err != nil {
 		t.Fatalf("error beginning session: %v", err)
@@ -120,13 +120,13 @@ func TestSessionCycle(t *testing.T) {
 		t.Error("SessionID returned from BeginSession was zero-length")
 	}
 
-	//ensure response recorder contains Authorization header
+	// ensure response recorder contains Authorization header
 	token := respRec.Header().Get(headerAuthorization)
 	if len(token) == 0 {
 		t.Error("no token returned in Authorization header")
 	}
 
-	//get session state
+	// get session state
 	req, _ = http.NewRequest("GET", "/", nil)
 	req.Header.Add(headerAuthorization, token)
 	var state2 int
@@ -141,7 +141,7 @@ func TestSessionCycle(t *testing.T) {
 		t.Errorf("incorrect session state: expected %d but got %d", state, state2)
 	}
 
-	//end the session
+	// end the session
 	sid2, err = EndSession(req, key, store)
 	if err != nil {
 		t.Errorf("unexpected error ending session: %v", err)
@@ -150,16 +150,16 @@ func TestSessionCycle(t *testing.T) {
 		t.Errorf("SessionID returned from EndSession did not match SessionID returned from BeginSesion:\nEXPECTED:\n%s\nACTUAL:\n%s", sid, sid2)
 	}
 
-	//try getting the session state with the same token to ensure
-	//that we get back the correct error
+	// try getting the session state with the same token to ensure
+	// that we get back the correct error
 	state2 = 0
 	_, err = GetState(req, key, store, &state2)
 	if err != ErrStateNotFound {
 		t.Error("getting state after session end did not return ErrStateNotFound")
 	}
 
-	//try ending the session with no Authorization header in request
-	//and ensure it generates an error
+	// try ending the session with no Authorization header in request
+	// and ensure it generates an error
 	req.Header.Del(headerAuthorization)
 	_, err = EndSession(req, key, store)
 	if err == nil {

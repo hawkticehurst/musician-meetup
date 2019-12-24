@@ -58,8 +58,8 @@ func TestRedisStore(t *testing.T) {
 		t.Fatalf("error saving state: %v", err)
 	}
 
-	//verify that trying to save an unmarshalable session state
-	//generates an error (function values can't be encoded in JSON)
+	// verify that trying to save an unmarshalable session state
+	// generates an error (function values can't be encoded in JSON)
 	if err := store.Save(sid, func() {}); err == nil {
 		t.Error("expected erorr when attempting to save an unmarshalable session state")
 	}

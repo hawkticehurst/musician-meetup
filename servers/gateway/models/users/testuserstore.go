@@ -22,9 +22,8 @@ func (client *TestUserStore) GetByID(id int64) (*User, error) {
 		user, _ := newUser.ToUser()
 		user.ID = 1
 		return user, nil
-	} else {
-		return nil, fmt.Errorf("Error fetching selected user")
 	}
+	return nil, fmt.Errorf("Error fetching selected user")
 }
 
 // GetByEmail returns the User with the given email
