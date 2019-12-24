@@ -102,6 +102,7 @@
           joinEvent(event.id);
         });
       }
+
       const card = document.createElement('div');
       card.className = 'card';
 
@@ -231,7 +232,7 @@
     const nameEQ = "auth=";
     const cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
-      let cookie = cookies[i];
+      const cookie = cookies[i];
       while (cookie.charAt(0) == " ") {
         cookie = cookie.substring(1, cookie.length);
       }
