@@ -16,7 +16,7 @@ Users will interact exclusively with our web UI Docker container (hosted on AWS)
 
 ### Service Architecture
 
-![Diagram of the Service Architecture](./assets/architecture.png)
+![Diagram of the Service Architecture](./assets/architecture.png | width=100)
 
 API Gateway is responsible for upgrading and storing CLIENT websocket connections.
 
