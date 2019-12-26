@@ -193,9 +193,9 @@ The service maintains a connection to our **MySQL** database (over port 3306) in
 
 ## Database Schemas
 
-We will use MySQL as our persistent database.
+We used MySQL as our persistent database.
 
-Users: User represents a person who can log-in, message, and be a part of meetups on our site
+**Users Schema**: Represents a person who can log-in, send messages, and join meetups on our site.
 ```
 CREATE TABLE IF NOT EXISTS Users (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS Users (
 );
 ```
 
-Events: Represents an event that multiple users can join
+**Events Schema**: Represents an event that multiple users can join.
 ```
 CREATE TABLE IF NOT EXISTS Events (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS Events (
 );
 ```
 
-Channels: Represents a chat channel
+**Channels Schema**: Represents a chat channel where users can discuss the details of an event.
 ```
 CREATE TABLE IF NOT EXISTS Channels (
     ID INT NOT NULL AUTO_INCREMENT,
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS Channels (
 );
 ```
 
-Messages: Represents a user created chat message
+**Messages Schema**: Represents a user created chat message that belongs to a specified channel.
 ```
 CREATE TABLE IF NOT EXISTS Messages (
     ID INT NOT NULL AUTO_INCREMENT,
