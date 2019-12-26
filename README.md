@@ -1,8 +1,8 @@
 # Music Maker Meetup
 
-University of Washington, INFO 441: Server-Side Development Final Project
-
 [Hawk Ticehurst](https://hawkticehurst.com), [Stanley Wu](https://github.com/s711258w), [Pierce Cave](https://github.com/piercecave)
+
+University of Washington, INFO 441: Server-Side Development Final Project
 
 ## Project Description
 
@@ -80,14 +80,14 @@ The service maintains a connection to our **MySQL** database (over port 3306) in
 
 ```/v1/users/{userid | me}```
 - ```GET```: Get user information
-    - ```200```: Returns ```application/json``` user information
+    - ```200```: Returns ```application/json``` copy of the user information
     - ```401```: Could not retrieve user, or invalid session
     - ```404```: Specified user not found
     - ```500```: Server error
 
 ```/v1/users/me```
 - ```PATCH```: Update the currently authenticated user information
-    - ```200```: Returns ```application/json``` updated user information
+    - ```200```: Returns ```application/json``` copy of the updated user information
     - ```403```: Invalid user id
     - ```415```: Client did not use JSON in request
     - ```500```: Server error
