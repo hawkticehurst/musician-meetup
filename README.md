@@ -2,11 +2,11 @@
 
 University of Washington, INFO 441: Server-Side Development Final Project
 
-[Hawk Ticehurst](https://hawkticehurst.com), [Stanley Wu](), [Pierce Cave]()
+[Hawk Ticehurst](https://hawkticehurst.com), [Stanley Wu](https://github.com/s711258w), [Pierce Cave](https://github.com/piercecave)
 
 ## Project Description
 
-The aim of this project was to build a platform that enables the creation and persistence of meetup events and facilitates communication between musicians who enjoy playing music together.
+The aim of this project was to build a platform that enables the creation of meetup events and facilitates communication between musicians who enjoy playing music together.
 
 It can be sometimes difficult for musicians to find other players with similar interests. As a result this platform will allow users to post public meetup events and message other users within the context of a specific event.
 
@@ -16,7 +16,7 @@ As developers, we were intrigued by the technical challenge that live-messaging 
 
 ### Infrastructure
 
-Users will interact exclusively with our Web UI NGINX Docker container––hosted on an AWS EC2 instance. The web interface container interacts with our backend docker network––hosted on a separate EC2 instance. 
+Users interact exclusively with our Web UI NGINX Docker container––hosted on an AWS EC2 instance. The web interface container interacts with our backend docker network––hosted on a separate EC2 instance. 
 
 The API Gateway Service, accessed via a REST API on port 443, is the singular entry point of our backend. The Gateway Service is predominantly responsible for authenticating users, facilitating communication with all the other microservices in our backend, and creating and storing active WebSocket connections for each user who has a chat open. New user data created by this service is stored using the MySQL database, accessed on port 3306. New session data is stored in the Redis database, accessed on port 6379.
 
@@ -28,7 +28,7 @@ The Messaging Service, accessed via a REST API on port 80, is responsible for cr
 
 ![Diagram of the Service Architecture](./assets/architecture.png)
 
-```Note: Labels formatted as {somename} are used to identify the Docker container name or docker network name of each component in the above architectural diagram.```
+```Note: Labels formatted as {somename} are used to identify the Docker container name or Docker network name of each component in the above architectural diagram.```
 
 ### User Stories
 
