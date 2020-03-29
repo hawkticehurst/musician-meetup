@@ -1,4 +1,4 @@
-# Music Maker Meetup
+# Musician Meetup
 
 [Hawk Ticehurst](https://hawkticehurst.com), [Stanley Wu](https://github.com/s711258w), [Pierce Cave](https://github.com/piercecave)
 
