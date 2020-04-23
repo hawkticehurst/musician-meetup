@@ -249,3 +249,7 @@ CREATE TABLE IF NOT EXISTS Messages (
     PRIMARY KEY (ID)
 );
 ```
+
+## License
+
+[MIT](LICENSE)
