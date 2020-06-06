@@ -3,8 +3,7 @@
 <h4 align="center">A meetup and communication platform for musicians.</h4>
 
 <p align="center">
-  <a href="#project-description">
-   Project Description</a>&nbsp;|
+  <a href="#project-description">Project Description</a>&nbsp;|
    &nbsp;<a href="#technical-description">Technical Description</a>&nbsp;|
    &nbsp;<a href="#api-endpoints">API Endpoints</a>&nbsp;|
    &nbsp;<a href="#database-schemas">Database Schemas</a>&nbsp;|
