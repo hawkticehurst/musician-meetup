@@ -48,13 +48,11 @@ The **Messaging Service**, accessed via a REST API on port 80, is responsible fo
 | P1 (Med) | As a user | I want to be able to join meetup events that have already been created |
 
 
-```
 **Story #1: I want to be able to create a user account and log in**
 
 We created a **Dockerized** **Go** web microservice that acts as an API gateway. This web service exposes a REST API (over port 443) that the Web UI can call. This gateway facilitates user account creation and authentication.
 
 The service maintains a connection to our **MySQL** database (over port 3306) in order to save user information. The service also maintains a connection to our **Redis** database (over port 6379) in order to create, track, and delete user sessions.
-```
 
 **Story #2: I want to create public meetup events that other music players can discover**
 
