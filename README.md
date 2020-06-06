@@ -1,8 +1,16 @@
-# Musician Meetup
+<h1 align="center">Musician Meetup</h1>
 
-[Hawk Ticehurst](https://hawkticehurst.com), [Stanley Wu](https://github.com/s711258w), [Pierce Cave](https://github.com/piercecave)
+<h4 align="center">A meetup and communication platform for musicians.</h4>
 
-University of Washington, INFO 441: Server-Side Development Final Project
+<p align="center">
+  <a href="#project-description">
+   Project Description</a>&nbsp;|
+   &nbsp;<a href="#technical-description">Technical Description</a>&nbsp;|
+   &nbsp;<a href="#api-endpoints">API Endpoints</a>&nbsp;|
+   &nbsp;<a href="#database-schemas">Database Schemas</a>&nbsp;|
+   &nbsp;<a href="#authors">Authors</a>&nbsp;|
+   &nbsp;<a href="#license">License</a>
+</p>
 
 ## Project Description
 
@@ -249,6 +257,12 @@ CREATE TABLE IF NOT EXISTS Messages (
     PRIMARY KEY (ID)
 );
 ```
+
+## Authors
+
+[Hawk Ticehurst](https://hawkticehurst.com), [Stanley Wu](https://github.com/s711258w), [Pierce Cave](https://github.com/piercecave)
+
+University of Washington, INFO 441: Server-Side Development Final Project
 
 ## License
 
