@@ -11,6 +11,8 @@
    &nbsp;<a href="#license">License</a>
 </p>
 
+<div align="center"><img src="assets/musician_meetup.png"/></div>
+
 ## Project Description
 
 The aim of this project was to build a platform that enables the creation of meetup events and facilitates communication between musicians who enjoy playing music together.
